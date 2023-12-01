@@ -25,7 +25,7 @@ typedef CardList Deck;
 typedef CardList Hand;
 typedef CardList Discard;
 
+Deck *InitDeck(Arena *arena, int count);
 void DrawHand(Hand hand);
 void DrawBattle(CardList list);
-Deck *InitDeck(int num);
 void CardListShuffle(Arena *temp_arena, CardList *list);

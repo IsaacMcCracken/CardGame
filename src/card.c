@@ -23,13 +23,15 @@ Deck *InitDeck(Arena *arena, int count) {
   deck->last = &cards[count - 1];
   for (size_t i = 0; i < count; i++) 
   {
-    cards[i].health = i * 10;
+    cards[i].health = i + 1;
 
     if (i > 0)
       cards[i].prev = &cards[i - 1];
     if (i < count - 1)
       cards[i].next =  &cards[i + 1];
   } 
+
+  return deck;
 }
 
 // This function takes a 
@@ -40,7 +42,7 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
   // We put all the pointers in a temporary list
   Card *node = list->first;
   for (size_t i = 0; i < list->count; i++) {
-    const Card *next = node->next;
+    Card *next = node->next;
 
     card_p_list[i] = node;
 
@@ -49,7 +51,7 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
 
   // Shuffle all the pointers
   for (size_t i = 0; i < list->count; i++) {
-    int index = GetRandomValue(0, list->count);
+    int index = GetRandomValue(0, list->count - 1);
 
     Card *swap = card_p_list[index];
 
@@ -75,6 +77,11 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
       node->next = NULL;
 
   }
+
+
+  list->first = first;
+  list->last = last;
+  
   
   
   

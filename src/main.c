@@ -25,14 +25,14 @@
 int main() {
   InitWindow(800, 800, "Card Game");
 
-  Arena *arena = ArenaInit(sizeof(Card)*1000);
+  Arena *arena = ArenaInit(Mega(100));
   
-  CardList *deck = InitDeck(40);
+  CardList *deck = InitDeck(arena, 30);
 
-  printf("Unshuffled Deck");
+  printf("Unshuffled Deck\n");
   Card *node = deck->first;
   while (node) {
-    const Card *next = node->next;
+    Card *next = node->next;
 
     printf("\tHealth: %ld\n", node->health);
 
@@ -41,10 +41,10 @@ int main() {
 
   CardListShuffle(arena, deck);
 
-  printf("Shuffled Deck");
+  printf("Shuffled Deck\n");
   node = deck->first;
   while (node) {
-    const Card *next = node->next;
+    Card *next = node->next;
 
     printf("\tHealth: %ld\n", node->health);
 

@@ -1,6 +1,7 @@
 #ifndef ME_ARENA
 #define ME_ARENA
 
+
 #define Kilo(x) ((x)<<10)
 #define Mega(x) ((x)<<20)
 #define Giga(x) (((unsigned long long)(x))<<30)
@@ -26,12 +27,12 @@ struct TempArena {
 
 
 Arena *ArenaInit(unsigned long long capacity);
+void ArenaReset(Arena *arena);
 void ArenaDeinit(Arena *arena);
 void *ArenaPushNoZero(Arena *arena, unsigned long long size);
 void *ArenaPush(Arena *arena, unsigned long long size);
-void *ArenaReset(Arena *arena);
 
 TempArena TempArenaInit(Arena *backing_arena);
-TempArena TempArenaDeinit(TempArena temp_arena);
+void TempArenaDeinit(TempArena temp_arena);
 
 #endif

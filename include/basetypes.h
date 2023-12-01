@@ -14,4 +14,12 @@ typedef signed char       I8;
 typedef signed long       I32;
 typedef signed long long  I64;
 
+// Floats
+typedef float F32;
+typedef double F64;
+
+#ifndef NULL
+  #define NULL 0
+#endif
+
 #endif // BASETYPES_H
