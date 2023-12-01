@@ -1,10 +1,12 @@
-
+#include "arena.h"
 
 typedef struct Card Card;
 typedef void (*Attack)(Card* card, Card* enemy);
 struct Card {
   Card *next;
   Card *prev;
+  char name[256];
+  char nameLen;
   int health;
   int healthCapacity;
   int attackDamage[4];
@@ -22,3 +24,8 @@ struct CardList {
 typedef CardList Deck;
 typedef CardList Hand;
 typedef CardList Discard;
+
+void DrawHand(Hand hand);
+void DrawBattle(CardList list);
+Deck *InitDeck(int num);
+void CardListShuffle(Arena *temp_arena, CardList *list);

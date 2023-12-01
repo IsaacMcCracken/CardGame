@@ -38,7 +38,17 @@ void *ArenaPush(Arena *arena, unsigned long long size) {
   return result;
 }
 
-void *ArenaReset(Arena *Arena) {
-
+void *ArenaReset(Arena *arena) {
+  arena->pos = 0;
 }
 
+TempArena TempArenaInit(Arena *backing_arena) {
+  return (TempArena){
+    .arena = backing_arena,
+    .pos = backing_arena->pos,
+  };
+}
+
+TempArena TempArenaDeinit(TempArena temp_arena) {
+  temp_arena.arena->pos = temp_arena.pos;
+}
