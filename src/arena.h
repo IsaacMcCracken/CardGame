@@ -21,6 +21,17 @@ typedef struct TempArena TempArena;
 struct TempArena {
   Arena *arena;
   unsigned long long pos;
-}
+};
+
+
+
+Arena *ArenaInit(unsigned long long capacity);
+void ArenaDeinit(Arena *arena);
+void *ArenaPushNoZero(Arena *arena, unsigned long long size);
+void *ArenaPush(Arena *arena, unsigned long long size);
+void *ArenaReset(Arena *arena);
+
+TempArena TempArenaInit(Arena *backing_arena);
+TempArena TempArenaDeinit(TempArena temp_arena);
 
 #endif
