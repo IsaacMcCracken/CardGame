@@ -78,6 +78,12 @@ Entity some_entity = (Entity){
 // Or like this 
 Entity another_entity = { 0 }; // this is how you zero initialize a struct
 
+// This is the wrong way 
+Entity yet_another_entity = {0,0,0,0}; // Bad because we do not know what is being set to what
+
+// Only do this if you know what you are doing
+Entity some_other_entity; // very bad because its just random memory here
+
 /*
   Functions
    
@@ -121,8 +127,11 @@ void SomeMain(void) {
   We will most likely only have two arena allocators for the
   whole application.
 
+  * some raylib functions use the malloc allocator so we have to be careful
+  when using those functions.
+
   Long Video (conference talk) that has lots of knowledge (would recommend)
-    https://vimeo.com/856069590
+    https://vimeo.com/856069590 please watch - maybe 30 minutes a day until completed
 
   watch this video for a good explaination on Arena Allocators:
     https://www.youtube.com/watch?v=3IAlJSIjvH0
@@ -161,7 +170,7 @@ String StringLit(char *str) {
   };
 }
 
-// This function makes an allocation and returns a string
+// This function makes an heap allocation and returns a string
 // Our equivalent of strcat
 String StringCat(Arena *arena, String a, String b) { // Arena are always the first param
   U64 len = a.len + b.len;

@@ -1,5 +1,6 @@
 #include "card.h"
 #include "arena.h"
+#include <string.h>
 #include <raylib.h>
 
 CardList CardListPopToOther(CardList *dest, CardList* src, int count) {
@@ -14,8 +15,18 @@ CardList CardListPopToOther(CardList *dest, CardList* src, int count) {
   }
 }
 
-Deck *InitDeck(Arena *arena, int count) {
-  Deck *deck = ArenaPush(arena, sizeof(CardList));
+CardList *CardListInit(Arena *arena, U32 count) {
+  char *names[] = {
+    "Hungry Boy",
+    "Use Weapon",
+    "Fucky Wucky",        
+    "Piece of shit",
+    "Acerola",
+    "Anime Girl",
+    "Ethan Cum"
+  };
+
+  CardList *deck = ArenaPush(arena, sizeof(CardList));
   Card *cards = ArenaPush(arena, sizeof(Card) * count);
 
   deck->count = count;
@@ -23,7 +34,12 @@ Deck *InitDeck(Arena *arena, int count) {
   deck->last = &cards[count - 1];
   for (size_t i = 0; i < count; i++) 
   {
-    cards[i].health = i + 1;
+    U32 name_index = GetRandomValue(0, 6);
+
+
+    cards[i].data = i + 1;
+    strcpy(cards[i].name, names[name_index]);
+     
 
     if (i > 0)
       cards[i].prev = &cards[i - 1];
@@ -54,7 +70,6 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
     int index = GetRandomValue(0, list->count - 1);
 
     Card *swap = card_p_list[index];
-
     card_p_list[index] = card_p_list[i];
     card_p_list[i] = swap;
 
@@ -81,10 +96,7 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
 
   list->first = first;
   list->last = last;
-  
-  
-  
-  
+
 
   TempArenaDeinit(temp);
 } 

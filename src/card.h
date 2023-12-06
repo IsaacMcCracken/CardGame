@@ -6,12 +6,8 @@ struct Card {
   Card *next;
   Card *prev;
   char name[256];
-  char nameLen;
-  int health;
-  int healthCapacity;
-  int attackDamage[4];
-  Attack attacks[4];
-  int attackCount;
+  char name_len;
+  U8 data;
 };
 
 typedef struct CardList CardList;
@@ -25,7 +21,5 @@ typedef CardList Deck;
 typedef CardList Hand;
 typedef CardList Discard;
 
-Deck *InitDeck(Arena *arena, int count);
-void DrawHand(Hand hand);
-void DrawBattle(CardList list);
+CardList *CardListInit(Arena *arena, U32 count);
 void CardListShuffle(Arena *temp_arena, CardList *list);
