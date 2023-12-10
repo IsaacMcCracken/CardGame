@@ -53,13 +53,15 @@ void DrawCard(Vector2 positon, Vector2 size, Card *card) {
 }
 
 int main() {
+
+  TraceLogLevel(LOG_ALL);
   InitWindow(800, 800, "Card Game");
 
   Arena *arena = ArenaInit(Megabyte(100));
   Arena *temp_arena = ArenaInit(Megabyte(100));
   
   CardList *deck = CardListInit(arena, 30);
-
+  CardList *hand = CardListInit(arena, 0);
 
 
   World world = WorldInit(arena, 20, 20);
@@ -74,9 +76,16 @@ int main() {
     BeginDrawing();
       ClearBackground(BLACK);
       
+      int c = GetCharPressed();
+
+      if (c >= '0' && c <= '9') {
+        c = c - '0';
+        CardListPopAppend(hand, deck, c);
+      }
+
       WorldDraw(&world);
       WorldUpdateFrame(&world, temp_arena);
-
+      CardListHandDraw(hand);
 
     EndDrawing();
   }

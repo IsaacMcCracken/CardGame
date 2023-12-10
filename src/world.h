@@ -4,16 +4,7 @@
 #include <raylib.h>
 #include "arena.h"
 
-// TODO: Put this in entity.h
-typedef U8 Effects; 
-enum {
-  Effects_is_greased,
-  Effects_is_on_fire,
-  Effects_is_acidified,
-  Effects_is_on_acid,
-
-};
-
+struct Entity;
 
 typedef U8 Tile;
 enum {
@@ -21,14 +12,13 @@ enum {
   Tile_wall,
 };
 
-
 typedef struct World World;
 struct World {
   Camera2D camera;
   U32 height;
   U32 width;
   Tile *tiles;
-
+  
 };
 
 typedef struct WorldCoord WorldCoord;

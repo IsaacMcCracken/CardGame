@@ -1,6 +1,6 @@
 /* 
-  This is not a actual src file but a style guide and mini c tutorial
-  for coding in for this project.
+  This is not a actual src file but a style guide, introduction to the 
+  codebase, and mini c tutorial.
 */
 
 /*
@@ -115,6 +115,36 @@ void SomeMain(void) {
 
   a = Vec2Add(a, b); // This is like saying a += b
 
+}
+
+/*
+  Pointers
+*/
+
+void SomeProcedure(void) {
+  // Lets always initalize our pointers
+  void *some_ptr = NULL;
+
+  // if checking if a ptr has a value go like this 
+  if (some_ptr) {
+    // do somethings with some_ptr
+  }
+
+  // We prefer to use the style above 
+  // but if you need to check if a pointer is
+  // null you do an explicit comparason
+  if (some_ptr == NULL) {
+    // do something if the pointer is null
+  }
+}
+
+// Here is what you do not want to do
+void SomeBadProcedure(void) {
+  void *some_ptr; // we dont initialize it
+
+  if (some_ptr != NULL) {} // this is ugly
+
+  
 }
 
 /*

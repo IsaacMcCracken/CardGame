@@ -4,22 +4,17 @@
 #include "world.h"
 
 
-typedef struct PathNode PathNode;
-struct PathNode {
-  PathNode *next;
-  WorldCoord coord;
-};
 
-typedef struct PathNodeList PathNodeList;
-struct PathNodeList {
-  PathNode *first;
-  PathNode *last;
-  U64 count;
+
+typedef struct WorldCoordList WorldCoordList;
+struct WorldCoordList {
+  WorldCoord *ptr;
+  U64 len;
 }; 
 
 
 
-PathNodeList *FindPath(
+WorldCoordList *FindPath(
   World *world,
   Arena *turn_arena,
   WorldCoord start,
@@ -27,4 +22,4 @@ PathNodeList *FindPath(
   U32 max_iterations
 );
 
-void PathNodeListDraw(World *world, PathNodeList *list);
+void WorldCoordListDraw(World *world, WorldCoordList *list);

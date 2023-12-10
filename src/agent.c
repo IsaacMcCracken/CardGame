@@ -1,4 +1,5 @@
 #include "agent.h"
+#include "raymath.h"
 
 #include <assert.h>
 
@@ -7,7 +8,7 @@ struct AStarNode {
   AStarNode *prev_path; // previous node in the path
   AStarNode *next_list; // next in the list
   WorldCoord coord;
-  U32 g_cost;
+  U32 g_cost; 
   U32 h_cost;
 };
 
@@ -107,21 +108,7 @@ AStarNode *AStarListFindByCoord(AStarList *list, WorldCoord coord) {
 }
 
 
-void PathNodeListAppend(PathNodeList *list, PathNode *node) {
-    if (list->last) {
-    list->last->next = node;
-    list->last = node;
-    list->count += 1;
-  } else {
-    list->first = node;
-    list->last = node;
-    list->count = 1;
-  }
-}
-
-
-
-PathNodeList *PathNodeListFromAStar(Arena *arena, AStarNode *end_node) {
+WorldCoordList *WorldCoordListFromAStar(Arena *arena, AStarNode *end_node) {
   U32 path_node_count = 0;
   AStarNode *astar_node = end_node;
   while (astar_node) {
@@ -129,32 +116,27 @@ PathNodeList *PathNodeListFromAStar(Arena *arena, AStarNode *end_node) {
     astar_node = astar_node->prev_path;
   }
 
-  PathNodeList *list = ArenaPush(arena, sizeof(PathNodeList));
+  WorldCoordList *list = ArenaPush(arena, sizeof(WorldCoordList));
 
-  PathNode *path_node_array = ArenaPush(arena, sizeof(PathNode) * path_node_count);
+  WorldCoord *coord_array = ArenaPush(arena, sizeof(WorldCoord) * path_node_count);
   astar_node = end_node;
   for (U32 i = 0; i < path_node_count; i++) {
-    path_node_array[path_node_count - i - 1].coord = astar_node->coord;
-
-    if (i < path_node_count - 1)
-      path_node_array[i].next = &path_node_array[i + 1];
+    coord_array[path_node_count - i - 1] = astar_node->coord;
 
     astar_node = astar_node->prev_path;
   }
 
-  if (path_node_array) {
-    list->count = path_node_count;
-    list->first = &path_node_array[0];
-    list->last = &path_node_array[path_node_count - 1];
+  if (coord_array) {
+    list->len = path_node_count;
+    list->ptr = coord_array;
   }
-  
   
   
   return list;
 }
 
 // This boy is becoming heafty 
-PathNodeList *FindPath(
+WorldCoordList *FindPath(
   World *world,
   Arena *turn_arena,
   WorldCoord start,
@@ -193,7 +175,7 @@ PathNodeList *FindPath(
     AStarListAppend(closed_list, current_node);
 
     if (current_node->coord.x == end.x && current_node->coord.y == end.y) 
-      return PathNodeListFromAStar(turn_arena, current_node);
+      return WorldCoordListFromAStar(turn_arena, current_node);
 
     // Go through each neighbor
     const WorldCoord p = current_node->coord;
@@ -249,17 +231,18 @@ PathNodeList *FindPath(
     }
   }
 
+  TraceLog(LOG_INFO, "Open List Count: %lu, Closed List Count: %lu, Iter: %lu", open_list->count, closed_list->count, iter);
+  TraceLog(LOG_DEBUG, "Seriously what the fuck!");
   return NULL;
 }
 
-void PathNodeListDraw(World *world, PathNodeList *list) {
-  PathNode *node = list->first;
-  PathNode *next = NULL;
-  while (node && node->next) {
-    // TraceLog(LOG_INFO, "PathNode @%p {%i, %i}", node, node->coord.x, node->coord.y);
-    next = node->next;
-    DrawLineEx(Vector2FromWorldCoord(node->coord), Vector2FromWorldCoord(next->coord), 0.1, BLUE);
-  
-    node = next;
+void WorldCoordListDraw(World *world, WorldCoordList *list) {
+
+  for (size_t i = 0; i < list->len - 1; i++) {
+    Vector2 start = Vector2Add(Vector2FromWorldCoord(list->ptr[i]), (Vector2){0.5, 0.5});    
+    Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
+
+    DrawLineEx(start, end, 0.1, BLUE);
+
   }
 }

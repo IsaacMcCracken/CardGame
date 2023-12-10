@@ -91,38 +91,17 @@ void WorldUpdateFrame(World *world, Arena *temp_arena) {
 
   BeginMode2D(world->camera);
 
-  PathNodeList *path_list = FindPath(world, temp_arena, (WorldCoord){0,0}, mouse_world_coord, 0);
+  U64 arena_size_before = temp_arena->pos;
+  WorldCoordList *path_list = FindPath(world, temp_arena, (WorldCoord){0,0}, mouse_world_coord, 0);
+  U64 arena_size_afer = temp_arena->pos;
 
-  if (path_list)
-    PathNodeListDraw(world, path_list);
-
-  static Rectangle test = {0,0,1,1};
-  test.x += 0.1;
-  if (path_list) {
-    PathNode *node =  path_list->first;
-    PathNode *target = NULL;
-    F32 distance = INFINITY;
-
-    while (node) {
-      F32 current_distance = Vector2DistanceSqr(Vector2FromWorldCoord(node->coord), (Vector2){test.x, test.y});
-      if (current_distance < distance) {
-        distance = current_distance;
-        target = node;
-      }
-      node = node->next;
-    }
-
-    Vector2 pos = (Vector2){test.x, test.y};
-    pos = Vector2Add(Vector2Scale(Vector2Normalize(Vector2Subtract(Vector2FromWorldCoord(target->coord), pos)), 0.05), pos);
+  if (path_list == NULL) 
+    TraceLog(LOG_DEBUG, "What happened here");
 
 
+  WorldCoordListDraw(world, path_list);
 
-    
-  }
-  
-
-  DrawRectangleRec(test, SKYBLUE);
-
+  // TraceLog(LOG_INFO, "Bytes Per Path Find: %lu", arena_size_afer - arena_size_before);
   EndMode2D();
 
   
