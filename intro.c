@@ -191,7 +191,7 @@ void SomeBadProcedure(void) {
   In other languages like java and c++ they have a concept called virtual functions
   at the end of the day we can it comes down to a plain old function pointer
 
-  We can declare a virtual function in a struct to give it a "virtual method"
+  We can declare a function pointer in a struct to give it a "virtual method"
   and this is a way we can orgranize our code. At the end of the day this is how
   c++ and java do it, but if you didn't know this you would not know that those
   languages are adding a memory footprint to your structs and classes.
@@ -201,6 +201,10 @@ typedef struct GameObject GameObject; // this is another name for entity
 // We declare the function pointer type like this
 typedef void (*UpdateFn)(GameObject *object);
 
+// Just to indicate that a type is a function pointer lets use the
+// postfix Fn as a clear indicator.
+
+
 struct GameObject {
   GameObject *next;
   U32 data;
@@ -209,12 +213,34 @@ struct GameObject {
   UpdateFn update_method;
 };
 
+
+// a "method" for our mario object
 void UpdateMario(GameObject *mario) {
   mario->data += 1;
 
   const F32 gravity = 9.81;
 
-  mario->position.y += g
+  mario->velocity.y += gravity;
+  mario->position = Vec2Add(mario->position, mario->velocity);
+}
+
+void UpdateGameObjects() {
+  // pretend this is a list of game objects
+  GameObject *objects = ArenaPush(sizeof(GameObject) * 1000);
+
+  // let our iterater to the first object in the list
+  GameObject *node = objects;
+
+  while (node) {
+    // generally we want to keep track of next just in case
+    // our ordering gets messed up while updating
+    GameObject *next = node->next;
+
+    // This is how we call our "method"
+    node->update_method(node);
+
+    node = next; // iterate on
+  }
 }
 
 
