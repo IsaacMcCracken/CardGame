@@ -2,12 +2,12 @@
 
 ### Contributing 
   To contribute please follow these steps
-    1.  Fork the repository.
-    2.  Clone your fork to your machine.
-    3.  Make, commit, and push your edits to your repo.
-    4.  Open a pull request.
-    5.  I will review and merge your contributions.
-    6.  Be happy and enjoy life and the work you've done.
+1.  Fork the repository.
+2.  Clone your fork to your machine.
+3.  Make, commit, and push your edits to your repo.
+4.  Open a pull request.
+5.  I will review and merge your contributions.
+6.  Be happy and enjoy life and the work you've done.
 
 ### Style Guide
   To under stand the style of the code base,
