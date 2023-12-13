@@ -42,11 +42,12 @@ int main() {
   World world = WorldInit(arena, 20, 20);
 
 
-  
+  Card *grabbing_card = NULL;
   while (!WindowShouldClose()) {
     // Update 
     ArenaReset(temp_arena);
     
+    Vector2 mouse_position = GetMousePosition();
     for (EachCardNodeReverse(card, hand->last)) {
       if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){
         .x = card->screen_position.x,
@@ -54,16 +55,27 @@ int main() {
         .width = 200,
         .height = 300})) {
 
-        card->screen_position = Vector2Lerp(
-          card->screen_position,
-          (Vector2){
-            card->screen_position.x,
-            GetScreenHeight() - 600},
-            GetFrameTime() * 1.0
-        );
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !grabbing_card) {
+          grabbing_card = CardListRemove(hand, card);
+          
+        } else 
+          card->screen_position = Vector2Lerp(
+            card->screen_position,
+            (Vector2){
+              card->screen_position.x,
+              GetScreenHeight() - 600},
+              GetFrameTime() * 1.0
+          );
 
         break;        
       } 
+    }
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && grabbing_card) {
+      grabbing_card->screen_position = Vector2Add(grabbing_card->screen_position, GetMouseDelta());
+    } else if (grabbing_card) {
+      CardListAppend(hand, grabbing_card);
+      grabbing_card = NULL;
     }
     
     // Draw 
@@ -80,6 +92,23 @@ int main() {
       WorldDraw(&world);
       WorldUpdateFrame(&world, temp_arena);
       CardListHandDraw(hand);
+      if (grabbing_card) {
+        CardDraw(grabbing_card);
+        Vector2 card_world_postion = GetScreenToWorld2D(grabbing_card->screen_position, world.camera);
+        Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
+
+        WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
+        BeginMode2D(world.camera);
+          Rectangle card_target_rect = (Rectangle){
+            .x = card_target_coord.x,
+            .y = card_target_coord.y,
+            .width = 1,
+            .height = 1,
+          };
+          DrawLineEx(card_world_postion, Vector2FromWorldCoord(card_target_coord), 0.05, RED);
+          DrawRectangleLinesEx(card_target_rect, 0.1, RED);
+        EndMode2D();
+      }
 
     EndDrawing();
   }

@@ -7,6 +7,7 @@
 
 #define ENTITY_NAME_SIZE 64
 
+
 typedef struct EffectFlags EffectFlags;
 struct EffectFlags {
   U8 is_on_fire: 1;
@@ -49,7 +50,8 @@ struct EntityList {
   U64 count;
 };
 
-#define EachNode(node) void *__next__ = node->next; node; node = __next__, __next__ = node->next 
+// for loop entity iterator
+#define EachEntity(it, first) Entity *it = (first); it != NULL; it = it->next 
 
 
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);

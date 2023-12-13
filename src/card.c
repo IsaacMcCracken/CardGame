@@ -1,5 +1,6 @@
-#include "card.h"
-#include "card_types.h"
+#include "card_types.h" 
+#include "rayutil.h"
+// #include "card.h"
 
 #include <string.h>
 #include <raymath.h>
@@ -64,7 +65,15 @@ void CardDraw(Card *card) {
   };
   DrawRectangleRec(rect, RAYWHITE);
   DrawRectangleLinesEx(rect, 2, BLACK);
-  DrawText(TextFormat("Data: %u", card->data), card->screen_position.x + 10, card->screen_position.y + 10, 20, BLACK);
+  
+  Rectangle description_rect = (Rectangle){
+    .x = rect.x + 15,
+    .y = rect.y + 100,
+    .width = DefaultCardSize.x - 30,
+    .height = rect.y + DefaultCardSize.y - 5,
+  };
+  DrawText(card_archetypes[card->data].name, card->screen_position.x + 10, card->screen_position.y + 10, 20, BLACK);
+  DrawTextInRectangle(GetFontDefault(), card_archetypes[card->data].description, description_rect, 15, BLACK);
 }
 
 
@@ -82,7 +91,7 @@ void CardListHandDraw(CardList *hand) {
     
     node->screen_position = Vector2Lerp(
       node->screen_position,
-      (Vector2){hand_layout_x + (hand_layout_width/count) * hand_position, GetScreenHeight() - 200},
+      (Vector2){hand_layout_x + (hand_layout_width/count) * hand_position, GetScreenHeight() - 100},
       2.0 * GetFrameTime()
     );
 
@@ -170,3 +179,48 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
 
   TempArenaDeinit(temp);
 } 
+
+void CardListAppend(CardList *list, Card *card) {
+  if (list->last) {
+    Card *last = list->last;
+    last->next = card;
+    card->prev = last;
+    list->last = card;
+    list->count += 1;
+  } else {
+    list->last = card;
+    list->first = card;
+    list->count = 1;
+  }
+}
+
+// please make sure when calling function that the card 
+// is in the list.
+Card *CardListRemove(CardList *list, Card* card) {
+  Card *next = card->next;
+  Card *prev = card->prev;
+  card->next = NULL;
+  card->prev = NULL;
+
+  list->count -= 1;
+
+  if (next && prev) {
+    prev->next = next;
+    next->prev = prev;
+  } else if (next) {
+    // so if this is the start of the list
+    next->prev = NULL;
+    list->first = next;
+  } else if (prev) {
+    // if this is the last card in the list;
+    prev->next = NULL;
+    list->last = prev;
+  } else {
+    // if this is the only item in the list
+    list->first = NULL;
+    list->last = NULL;
+  }
+
+
+  return card;
+}

@@ -11,6 +11,7 @@ void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_
 
     float scaleFactor = font_size/font.baseSize;         // Character quad scaling factor
     float spacing = scaleFactor;
+    
 
     for (int i = 0; i < size;)
     {
@@ -22,7 +23,7 @@ void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_
         if (codepoint == '\n' || textOffsetX >= rec.width)
         {
             // NOTE: Line spacing is a global variable, use SetTextLineSpacing() to setup
-            textOffsetY += spacing;
+            textOffsetY += ((float)font.recs[index].width*scaleFactor + spacing) * 2;
             textOffsetX = 0.0f;
         }
         else

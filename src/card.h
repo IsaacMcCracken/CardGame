@@ -3,13 +3,14 @@
 */
 
 #include "arena.h"
+#include "entity.h"
 #include <raylib.h>
 
 #define DefaultCardSize (Vector2){200, 300}
 
 typedef U8 CardCostType;
 enum {
-  CardCostType_no_cost,
+  CardCostType_no_cost = 0,
   CardCostType_action,
   CardCostType_bonus_action,
   CardCostType_full_action,
@@ -23,7 +24,7 @@ struct Card {
   U16 data;
 };
 
-typedef void (*CardFn)(World *, Entity *, Entity *, WorldCoord);
+typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
 
 typedef struct CardData CardData;
 struct CardData {
@@ -49,3 +50,5 @@ void CardListShuffle(Arena *temp_arena, CardList *list);
 void CardListPopAppend(CardList *destination_list, CardList *source_list, U16 count);
 void CardDraw(Card *card);
 void CardListHandDraw(CardList *hand);
+void CardListAppend(CardList *list, Card *card);
+Card *CardListRemove(CardList *list, Card* card); 

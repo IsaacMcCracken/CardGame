@@ -42,7 +42,7 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
     .height = height,
     .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
     .camera = (Camera2D) {
-      .zoom = 40.0f,
+      .zoom = 2 * width,
     },
   };
 }
@@ -79,15 +79,15 @@ void WorldUpdateFrame(World *world, Arena *temp_arena) {
   Vector2 mouse_pos = GetMousePosition();
   Vector2 mouse_world_pos = GetScreenToWorld2D(mouse_pos, world->camera);
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
-  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-    const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-    world->tiles[index] = Tile_wall;
-  }
+  // if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+  //   const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+  //   world->tiles[index] = Tile_wall;
+  // }
 
-  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-    const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-    world->tiles[index] = Tile_void;
-  }
+  // if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+  //   const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+  //   world->tiles[index] = Tile_void;
+  // }
 
   BeginMode2D(world->camera);
 
