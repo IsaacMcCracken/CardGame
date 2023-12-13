@@ -64,7 +64,7 @@ unsigned int counter2 = 0; // we dont use these long ass integer names
 // This is right
 U64 page_size = 4096; // use of snake case and a unsigned integer when the integer is not negative
 
-// This is wrong
+// This is wrong (I have conflicting feelings, i think camelCase might be better then snake_case)
 I64 pageSize = 4096; // the integer does not need to be negative and is camelCase
 
 // This is how we declare a struct variable 
@@ -89,6 +89,37 @@ EntityExample yet_another_entity = {0,0,0,0}; // Bad because we do not know what
 
 // Only do this if you know what you are doing
 EntityExample some_other_entity; // very bad because its just random memory here
+
+/*
+  Enums 
+
+  This is how we will declare enums in our code base
+*/
+
+// So traditionally enums are declared like this
+typedef enum {
+  VEGETABLE_EGGPLANT, // this starts at zero
+  VEGETABLE_POTATO, // this enumerates to 1
+  VEGETABLE_BROCOLLI, // this enumerates to 2
+  VEGETABLE_STEVEN_HAWKING, // and so on
+} Vegetable; 
+
+// a vegtable type will be an int so this is a 32-bit integer
+Vegetable kaidens_favorite_vegetable = VEGETABLE_EGGPLANT;
+
+// However in this code base we will do a more modern approach
+typedef U8 Fruit; // we will typedef the size of integer we want
+enum { // you can declare a 
+  Fruit_banana,
+  Fruit_mango,
+  Fruit_guava,
+  Fruit_my_bum
+};
+
+// when we finish we will get rid of any non-corporate approved comments and names
+Fruit kaidens_favourite_fruit = Fruit_my_bum;
+
+
 
 /*
   Functions
@@ -128,10 +159,11 @@ void SomeMain(void) {
 */
 
 void SomeProcedure(void) {
-  // Lets always initalize our pointers
+  // Lets always initalize our pointers 
   void *some_ptr = NULL;
 
-  // if checking if a ptr has a value go like this 
+  // if checking a pointer is not null in a if-statement 
+  // or while-statement do this. 
   if (some_ptr) {
     // do somethings with some_ptr
   }
@@ -149,9 +181,42 @@ void SomeBadProcedure(void) {
   void *some_ptr; // we dont initialize it
 
   if (some_ptr != NULL) {} // this is ugly
-
-  
 }
+
+/*
+  Function-Pointers
+
+  We will make use of function pointers when dealing with our card procedures
+
+  In other languages like java and c++ they have a concept called virtual functions
+  at the end of the day we can it comes down to a plain old function pointer
+
+  We can declare a virtual function in a struct to give it a "virtual method"
+  and this is a way we can orgranize our code. At the end of the day this is how
+  c++ and java do it, but if you didn't know this you would not know that those
+  languages are adding a memory footprint to your structs and classes.
+*/
+typedef struct GameObject GameObject; // this is another name for entity
+
+// We declare the function pointer type like this
+typedef void (*UpdateFn)(GameObject *object);
+
+struct GameObject {
+  GameObject *next;
+  U32 data;
+  Vec2 position;
+  Vec2 velocity;
+  UpdateFn update_method;
+};
+
+void UpdateMario(GameObject *mario) {
+  mario->data += 1;
+
+  const F32 gravity = 9.81;
+
+  mario->position.y += g
+}
+
 
 /*
   Memory Allocation
