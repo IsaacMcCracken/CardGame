@@ -18,13 +18,13 @@
 */
 
 // This is the correct way to declare a struct
-typedef struct Entity Entity;
-struct Entity {
+typedef struct EntityExample EntityExample;
+struct EntityExample {
   // This style of declarations lets us declare a pointer like this
-  Entity *next; 
-  Entity *prev;
-  Entity *first_child;
-  Entity *last_child;
+  EntityExample *next; 
+  EntityExample *prev;
+  EntityExample *first_child;
+  EntityExample *last_child;
   // other stuff goes here
 };
 
@@ -68,7 +68,7 @@ U64 page_size = 4096; // use of snake case and a unsigned integer when the integ
 I64 pageSize = 4096; // the integer does not need to be negative and is camelCase
 
 // This is how we declare a struct variable 
-Entity some_entity = (Entity){
+EntityExample some_entity = (EntityExample){
   .first_child = NULL,
   .last_child = NULL,
   .next = NULL,
@@ -76,13 +76,19 @@ Entity some_entity = (Entity){
 };
 
 // Or like this 
-Entity another_entity = { 0 }; // this is how you zero initialize a struct
+EntityExample another_entity = { 0 }; // this is how you zero initialize a struct
+
+// Or we can declare like this if we want some
+// fields to be initialized to 0 and some to have 
+// explicit data
+
+EntityExample yet_another_entity = (EntityExample){.next = &some_entity}; // all other fields will be set to 0 aka NULL
 
 // This is the wrong way 
-Entity yet_another_entity = {0,0,0,0}; // Bad because we do not know what is being set to what
+EntityExample yet_another_entity = {0,0,0,0}; // Bad because we do not know what is being set to what
 
 // Only do this if you know what you are doing
-Entity some_other_entity; // very bad because its just random memory here
+EntityExample some_other_entity; // very bad because its just random memory here
 
 /*
   Functions
@@ -174,8 +180,7 @@ void SomeBadProcedure(void) {
 */
 
 #include "src/arena.h"
-
-#include <string> // just examples
+#include <string.h> // just examples
 
 // example type
 typedef struct String String;

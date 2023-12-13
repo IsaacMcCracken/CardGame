@@ -1,3 +1,7 @@
+/*
+  This file is for 
+*/
+
 #include "arena.h"
 #include <raylib.h>
 
@@ -5,11 +9,11 @@
 
 typedef U8 CardCostType;
 enum {
-  CardCostType_no_cost
-  CardCostType_action;
-  CardCostType_bonus_action;
-  CardCostType_full_action;
-}
+  CardCostType_no_cost,
+  CardCostType_action,
+  CardCostType_bonus_action,
+  CardCostType_full_action,
+};
 
 typedef struct Card Card;
 struct Card {
@@ -19,14 +23,14 @@ struct Card {
   U16 data;
 };
 
-
+typedef void (*CardFn)(World *, Entity *, Entity *, WorldCoord);
 
 typedef struct CardData CardData;
 struct CardData {
   const char *name;
   const char *description;
   CardCostType cost_type;
-
+  CardFn method;
 };
 
 typedef struct CardList CardList;

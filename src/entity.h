@@ -49,7 +49,7 @@ struct EntityList {
   U64 count;
 };
 
-#define EachNode(node) void *__next__ = node; node; node = __next__, __next__ = node->next 
+#define EachNode(node) void *__next__ = node->next; node; node = __next__, __next__ = node->next 
 
 
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);

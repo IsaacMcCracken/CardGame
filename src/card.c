@@ -1,7 +1,7 @@
 #include "card.h"
+#include "card_types.h"
 
 #include <string.h>
-#include <raylib.h>
 #include <raymath.h>
 
 #define EachNode(node) void *__next__ = node; node; node = __next__, __next__ = node->next 
@@ -93,16 +93,6 @@ void CardListHandDraw(CardList *hand) {
 };
 
 CardList *CardListInit(Arena *arena, U32 count) {
-  char *names[] = {
-    "Hungry Boy",
-    "Use Weapon",
-    "Fucky Wucky",        
-    "Piece of shit",
-    "Acerola",
-    "Anime Girl",
-    "Ethan Cum"
-  };
-
   CardList *deck = ArenaPush(arena, sizeof(CardList));
   if (count == 0) {
     memset(deck, 0, sizeof(CardList));
@@ -116,12 +106,10 @@ CardList *CardListInit(Arena *arena, U32 count) {
   deck->last = &cards[count - 1];
   for (size_t i = 0; i < count; i++) 
   {
-    U32 name_index = GetRandomValue(0, 6);
 
 
-    cards[i].data = i + 1;
-    strcpy(cards[i].name, names[name_index]);
-     
+
+    cards[i].data = GetRandomValue(0, MAX_CARD_ARCHETYPES - 1);
 
     if (i > 0)
       cards[i].prev = &cards[i - 1];
