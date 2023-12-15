@@ -3,7 +3,6 @@
 
 #include <basetypes.h>
 #include "arena.h"
-#include "world.h"
 
 #define ENTITY_NAME_SIZE 64
 

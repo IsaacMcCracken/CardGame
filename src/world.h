@@ -3,8 +3,7 @@
 
 #include <raylib.h>
 #include "arena.h"
-
-struct Entity;
+#include "entity.h"
 
 typedef U8 Tile;
 enum {
@@ -18,14 +17,11 @@ struct World {
   U32 height;
   U32 width;
   Tile *tiles;
-  
+  Entity *entity_grid;
+  EntityList *entities;
 };
 
-typedef struct WorldCoord WorldCoord;
-struct WorldCoord {
-  I32 x;
-  I32 y;
-};
+
 
 // World 
 World WorldInit(Arena *arena, U32 width, U32 height);

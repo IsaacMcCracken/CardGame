@@ -4,7 +4,7 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
   {
     .name = "Battle Inspiration",
     .cost_type = CardCostType_no_cost,
-    .description = "Target one of your characters to gain another action."
+    .description = "Target one of your characters to gain another action.",
   },
   {
     .name = "Array of Arrows",

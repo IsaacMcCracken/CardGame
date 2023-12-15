@@ -11,4 +11,5 @@
 #include <raylib.h>
 
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
+
 #endif // RAY_UTIL_H
