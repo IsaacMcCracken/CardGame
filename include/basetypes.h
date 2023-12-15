@@ -18,6 +18,12 @@ typedef signed long long  I64;
 typedef float F32;
 typedef double F64;
 
+typedef struct WorldCoord WorldCoord;
+struct WorldCoord {
+  I32 x;
+  I32 y;
+};
+
 #ifndef NULL
   #define NULL 0
 #endif

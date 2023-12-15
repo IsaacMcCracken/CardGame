@@ -44,6 +44,8 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
     .camera = (Camera2D) {
       .zoom = 2 * width,
     },
+    .entity_grid = ArenaPush(arena, sizeof(Entity*) * width * height),
+    .entities = ArenaPush(arena, sizeof(EntityList)),
   };
 }
 
@@ -69,6 +71,12 @@ void WorldDraw(World *world) {
       }
 
       DrawRectangleV(tile_pos, (Vector2){1,1}, color);
+
+    }
+
+
+    for (EachEntity(entity, world->entities->first)) {
+      DrawRectangleV(entity->visual_pos, Vector2One(), GREEN);
     }
   }
   EndMode2D();

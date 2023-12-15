@@ -17,7 +17,7 @@ struct World {
   U32 height;
   U32 width;
   Tile *tiles;
-  Entity *entity_grid;
+  Entity **entity_grid;
   EntityList *entities;
 };
 

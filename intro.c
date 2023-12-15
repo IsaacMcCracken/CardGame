@@ -215,6 +215,7 @@ struct GameObject {
 
 
 // a "method" for our mario object
+// the function must have the same type and arguments as the function pointer type
 void UpdateMario(GameObject *mario) {
   mario->data += 1;
 
@@ -224,9 +225,14 @@ void UpdateMario(GameObject *mario) {
   mario->position = Vec2Add(mario->position, mario->velocity);
 }
 
-void UpdateGameObjects() {
-  // pretend this is a list of game objects
-  GameObject *objects = ArenaPush(sizeof(GameObject) * 1000);
+void SomeGameMain(void) {
+  Arena *some_arena = ArenaInit();
+
+  //  this is a list of game objects
+  GameObject *objects = ArenaPush(some_arena, sizeof(GameObject) * 1000);
+
+  objects[1].update_method = UpdateMario; // this is how you assign a function to a function pointer
+
 
   // let our iterater to the first object in the list
   GameObject *node = objects;
