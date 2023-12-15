@@ -17,7 +17,7 @@ struct Arena {
   U64 cap;
   U64 align;
   Arena *next;
-  U64 __unused[3];
+  U64 unused[3];
 };
 
 typedef struct TempArena TempArena;
@@ -29,8 +29,8 @@ struct TempArena {
 
 
 Arena *ArenaInit(U64 capacity);
-void ArenaReset(Arena *arena);
 void ArenaDeinit(Arena *arena);
+void ArenaReset(Arena *arena);
 void *ArenaPushNoZero(Arena *arena, U64 size);
 void *ArenaPush(Arena *arena, U64 size);
 

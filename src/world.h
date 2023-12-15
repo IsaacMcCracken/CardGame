@@ -4,6 +4,7 @@
 #include <raylib.h>
 #include "arena.h"
 #include "entity.h"
+#include "card.h"
 
 typedef U8 Tile;
 enum {
@@ -11,15 +12,21 @@ enum {
   Tile_wall,
 };
 
+typedef struct PlayerData PlayerData;
+struct PlayerData {
+  Card *grabbing_card;
+  Entity *selected_entity;
+}
+
 typedef struct World World;
 struct World {
   Camera2D camera;
   U32 height;
   U32 width;
   Tile *tiles;
-  Entity **entity_grid;
   EntityList *entities;
 };
+
 
 
 
