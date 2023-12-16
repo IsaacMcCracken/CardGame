@@ -44,7 +44,6 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
     .camera = (Camera2D) {
       .zoom = 2 * width,
     },
-    .entity_grid = ArenaPush(arena, sizeof(Entity*) * width * height),
     .entities = ArenaPush(arena, sizeof(EntityList)),
   };
 }

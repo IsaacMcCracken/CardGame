@@ -2,8 +2,8 @@
 #include <string.h>
 
 void EntityListAppend(EntityList *list, Entity *entity) {
+  Entity *last = list->last; 
   if (list->last) {
-    Entity *last = list->last;
     last->next = entity;
     entity->prev = last;
     list->last = entity;
@@ -25,7 +25,7 @@ Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
     memset(entity, 0, sizeof(Entity));
   } else {
     // Otherwise we just allocate new memory from a arena
-    Entity *entity = ArenaPush(arena, sizeof(entity));
+    entity = ArenaPush(arena, sizeof(entity));
   }
   
   EntityListAppend(list, entity);

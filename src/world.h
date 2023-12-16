@@ -12,11 +12,6 @@ enum {
   Tile_wall,
 };
 
-typedef struct PlayerData PlayerData;
-struct PlayerData {
-  Card *grabbing_card;
-  Entity *selected_entity;
-}
 
 typedef struct World World;
 struct World {

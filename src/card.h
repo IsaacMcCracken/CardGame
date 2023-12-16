@@ -1,9 +1,11 @@
 /*
   This file is for 
 */
+#ifndef CARD_H 
+#define CARD_H
 
 #include "arena.h"
-#include "entity.h"
+#include "world.h"
 #include <raylib.h>
 
 #define DefaultCardSize (Vector2){200, 300}
@@ -24,14 +26,14 @@ struct Card {
   U16 data;
 };
 
-typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
+// typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
 
 typedef struct CardData CardData;
 struct CardData {
   const char *name;
   const char *description;
   CardCostType cost_type;
-  CardFn method;
+  // CardFn method;
 };
 
 typedef struct CardList CardList;
@@ -52,3 +54,5 @@ void CardDraw(Card *card);
 void CardListHandDraw(CardList *hand);
 void CardListAppend(CardList *list, Card *card);
 Card *CardListRemove(CardList *list, Card* card); 
+
+#endif

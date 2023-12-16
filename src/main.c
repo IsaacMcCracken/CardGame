@@ -23,7 +23,6 @@
 // Item Cards
 // - weapons - each character can hold one weapon at a time
 
-#define CARD_SIZE (Vector2){200, 300}
 #define EachCardNode(it, first) Card *it = (first); it != NULL; it = it->next
 #define EachCardNodeReverse(it, last) Card *it = (last); it != NULL; it = it->prev
 
@@ -41,6 +40,7 @@ int main() {
 
   World world = WorldInit(arena, 20, 20);
 
+  Entity *player = EntityAlloc(arena, world.entities, "kaiden");
 
   Card *grabbing_card = NULL;
   while (!WindowShouldClose()) {

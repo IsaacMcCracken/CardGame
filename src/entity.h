@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include <basetypes.h>
+#include <raylib.h>
 #include "arena.h"
 
 #define ENTITY_NAME_SIZE 64
