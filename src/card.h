@@ -49,10 +49,14 @@ typedef CardList Discard;
 
 CardList *CardListInit(Arena *arena, U32 count);
 void CardListShuffle(Arena *temp_arena, CardList *list);
-void CardListPopAppend(CardList *destination_list, CardList *source_list, U16 count);
+void CardListPopAppend(CardList *to, CardList *from, U64 count);
 void CardDraw(Card *card);
 void CardListHandDraw(CardList *hand);
 void CardListAppend(CardList *list, Card *card);
 Card *CardListRemove(CardList *list, Card* card); 
+
+// Card Macros
+#define EachCardNode(it, first) Card *it = (first); it != NULL; it = it->next
+#define EachCardNodeReverse(it, last) Card *it = (last); it != NULL; it = it->prev
 
 #endif

@@ -5,55 +5,77 @@
 #include <string.h>
 #include <raymath.h>
 
-#define EachNode(node) void *__next__ = node; node; node = __next__, __next__ = node->next 
+void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
+  Card *slice_first = from->last;
+  Card *slice_last = from->last;
 
+  if (count >= from->count) {
+    // return if the from list is empty
+    if (from->count == 0) 
+      return; 
 
+    if (to->last) {
 
-// this function needs lots of testing
-void CardListPopAppend(CardList *destination_list, CardList *source_list, U16 count) {
+      // stitch em togther
+      to->last->next = from->first;
+      from->first->prev = to->last;
+      // move the last pointer
+      to->last = from->last;
+      // increase the count
+      to->count += from->count;
+    } else {
+      memcpy(to, from, sizeof(CardList));
+    }
 
-  Card *first = source_list->last;
-  Card *last = source_list->last;
-  int i = 0;
+    memset(from, 0, sizeof(CardList));
 
-  while (first && i < count) {
-
-    // I am reset the screen coords to the bottom right 
-    // because I dont really know where else to do that
-    first->screen_position = (Vector2){
-      .x = GetScreenWidth(),
-      .y = GetScreenHeight(),
-    };
-
-    i += 1;
-    if (i < count)
-    first = first->prev;
-  }
-
-
-
-  // TODO what if the card is the first item;
-  Card *prev = first->prev;
-  prev->next = NULL;
-  first->prev = NULL;
-
-  source_list->last = prev;
-
-
-  if (destination_list->last) {
-    Card *previous_last = destination_list->last;
-    previous_last->next = first;
-    first->prev = previous_last;
-  } else {
-    destination_list->first = first;
+    return;
   }
   
-  destination_list->last = last;
+  
+  U64 current_count = 0;
+  while (slice_first &&  current_count <= count) {
+    slice_first->screen_position = (Vector2){GetScreenWidth(), GetScreenHeight()};
+    current_count += 1;
 
-  destination_list->count += i + 1;
-  source_list->count -= i + 1;
+    if (current_count < count)
+      slice_first = slice_first->prev;
+  }
 
+  Card *new_last = slice_first->prev;
+
+  new_last->next = NULL;
+  slice_first->prev = NULL;
+  from->last = new_last;
+  
+
+  if (to->last){
+    Card *old_last = to->last;
+
+    //stitch these together
+    old_last->next = slice_first;
+    slice_first->prev = old_last;
+
+    // upadate list
+    to->last = slice_last;
+    to->count += current_count;
+    from->count -= current_count;
+  } else {
+
+    *to = (CardList){
+      .count = current_count,
+      .first = slice_first,
+      .last = slice_last,
+    };
+
+        from->count -= current_count;
+
+  }
+
+  
 }
+
+
 
 
 void CardDraw(Card *card) {
