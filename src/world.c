@@ -1,6 +1,7 @@
 #include "world.h"
 #include "agent.h"
 #include <raymath.h>
+
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
   return (Vector2){
@@ -97,22 +98,21 @@ void WorldUpdateFrame(World *world, Arena *temp_arena) {
   // }
 
   BeginMode2D(world->camera);
+  
+  if ((mouse_world_coord.x >= 0 && mouse_world_coord.x <= world->width) &&
+      (mouse_world_coord.y >= 0 && mouse_world_coord.y <= world->height)) {
+    
+    U64 arena_size_before = temp_arena->pos;
+    WorldCoordList *path_list = FindPath(world, temp_arena, (WorldCoord){0,0}, mouse_world_coord, 0);
+    U64 arena_size_afer = temp_arena->pos;
 
-  U64 arena_size_before = temp_arena->pos;
-  WorldCoordList *path_list = FindPath(world, temp_arena, (WorldCoord){0,0}, mouse_world_coord, 0);
-  U64 arena_size_afer = temp_arena->pos;
+    if (path_list == NULL) 
+      TraceLog(LOG_DEBUG, "What happened here");
 
-  if (path_list == NULL) 
-    TraceLog(LOG_DEBUG, "What happened here");
-
-
-  WorldCoordListDraw(world, path_list);
-
+    WorldCoordListDraw(world, path_list);
+  }
   // TraceLog(LOG_INFO, "Bytes Per Path Find: %lu", arena_size_afer - arena_size_before);
   EndMode2D();
-
-  
-
 }
 
 void WorldUpdateWorld(World *world) {
