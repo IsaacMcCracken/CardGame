@@ -1,4 +1,6 @@
-build/card game
+# only keep build.sh from build directory (sorry if this is cluttering things)
+build/*
+!build/build.sh
 
 # system files
 .DS_Store

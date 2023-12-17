@@ -5,7 +5,7 @@ include_directory="../include/"
 library_directory="../lib"
 frameworks=(CoreVideo IOKit Cocoa GLUT OpenGL)
 
-other=(../lib/libraylib.a)
+other=(../lib/libraylib.a -g)
 
 for framework in "${frameworks[@]}"; do
     framework_flags+=("-framework" "$framework")
