@@ -39,6 +39,9 @@ struct Entity {
   WorldCoord grid_pos;
   Vector2 visual_pos;
 
+  WorldCoordList *path;
+  U32 path_index;
+
   EntityFlags flags;
 };
 
@@ -55,5 +58,5 @@ struct EntityList {
 
 
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);
-
+Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord);
 #endif // ENTITY_H

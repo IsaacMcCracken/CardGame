@@ -23,10 +23,8 @@ struct AStarList {
 
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   // dont be scared this is just the absolute distance
-  U32 distance_x = (-(a->coord.x - b->coord.x) > a->coord.x - b->coord.x)? 
-    -(a->coord.x - b->coord.x) : a->coord.x - b->coord.x;
-  U32 distance_y = (-(a->coord.y - b->coord.y) > a->coord.y - b->coord.y)? 
-    -(a->coord.y - b->coord.y) : a->coord.y - b->coord.y;
+  U32 distance_x = abs(a->coord.x - b->coord.x);
+  U32 distance_y = abs(a->coord.y - b->coord.y);
 
   if (distance_x > distance_y)
     return 14 * distance_y + 10 * (distance_x - distance_y);
@@ -135,18 +133,26 @@ WorldCoordList *WorldCoordListFromAStar(Arena *arena, AStarNode *end_node) {
   return list;
 }
 
-// This boy is becoming heafty 
-WorldCoordList *FindPath(
+// This function can return null 
+WorldCoordList *WorldCoordListFindPath(
   World *world,
   Arena *turn_arena,
   WorldCoord start,
   WorldCoord end,
   U32 max_iterations
 ) {
+  // Lets check if we can actually get to the place
+  if (end.x < 0 || end.x >= world->width || end.y < 0 || end.y >= world->height)
+    return NULL;
+  else if (world->tiles[WorldIndexFromWorldCoord(world, end)] == Tile_wall)
+    return NULL;
 
+
+  // We have a closed list and a open_list
   AStarList *closed_list = ArenaPush(turn_arena, sizeof(AStarList));
   AStarList *open_list = ArenaPush(turn_arena, sizeof(AStarList));
 
+  // we have the start_list and append 
   AStarNode *start_node = AStarNodeCreate(turn_arena, start);
   AStarListAppend(open_list, start_node);
 
@@ -154,11 +160,15 @@ WorldCoordList *FindPath(
   AStarNode *end_node = &end_data;
 
   U32 iter = 0;
+  
   while (open_list->count > 0 && (iter < max_iterations || max_iterations == 0)) {
     iter += 1;
 
+    // This is the node that we are going to evaluate
     AStarNode *current_node = open_list->first;
 
+    // we first get this node by naively going through the list
+    // and getting the smallest one.
     AStarNode *node = current_node;
     while (node && node->next_list) {
       AStarNode *next = node->next_list;
@@ -170,10 +180,12 @@ WorldCoordList *FindPath(
       node = next;
     }
 
-
+    // Once we have the node with the lowest f-cost we 
+    // add it to the closed list.
     AStarListRemove(open_list, current_node);
     AStarListAppend(closed_list, current_node);
 
+    // now if the current node is in our target coord we end the cycle
     if (current_node->coord.x == end.x && current_node->coord.y == end.y) 
       return WorldCoordListFromAStar(turn_arena, current_node);
 
@@ -186,21 +198,20 @@ WorldCoordList *FindPath(
     };
 
     // First We get all the neighbors
-    AStarNode *neighbors[8];
     for (U8 i = 0; i < 8; i++) {
-      U32 world_index = WorldIndexFromWorldCoord(world, neighborCoord[i]);
 
-      // If we cannot cross this tile
-      //TODO Make Boundery check
-      // Bound Check 
+      // we bound check with the world's dimensions if its not in the
+      // dimensions we skip it.
       if (neighborCoord[i].x < 0 || neighborCoord[i].x > world->width ||
         neighborCoord[i].y < 0 || neighborCoord[i].y > world->height)
         continue;
 
+      // also if the tile is not tranversable 
+      U32 world_index = WorldIndexFromWorldCoord(world, neighborCoord[i]);
       if (world->tiles[world_index] == Tile_wall)
         continue;
 
-      // Or its in 
+      // Or the node had already been in
       if (AStarListFindByCoord(closed_list, neighborCoord[i])) 
         continue;
 
@@ -236,9 +247,9 @@ WorldCoordList *FindPath(
   return NULL;
 }
 
-void WorldCoordListDraw(World *world, WorldCoordList *list) {
+void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
 
-  for (U32 i = 0; i < list->len - 1; i++) {
+  for (U32 i = start; i < list->len - 1; i++) {
     Vector2 start = Vector2Add(Vector2FromWorldCoord(list->ptr[i]), (Vector2){0.5, 0.5});    
     Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
 
