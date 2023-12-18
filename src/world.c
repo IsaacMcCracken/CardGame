@@ -1,6 +1,7 @@
 #include "world.h"
 #include "agent.h"
 #include <raymath.h>
+
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
   return (Vector2){
@@ -150,11 +151,6 @@ void WorldUpdateFrame(
       world->tiles[index] = Tile_void;
     }
   }
-
-
-
-
-
 
   if (world->mode == WorldMode_game) {
     for (EachCardNodeReverse(card, world->hand->last)) {
