@@ -15,11 +15,19 @@ enum {
 
 typedef struct World World;
 struct World {
+  // world stuff
   Camera2D camera;
   U32 height;
   U32 width;
   Tile *tiles;
   EntityList *entities;
+  
+  // player stuff
+  Entity *grabbing_entity;
+  Card *grabbing_card;
+  CardList *deck;
+  CardList *hand;
+  CardList *discard;
 };
 
 

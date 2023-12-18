@@ -45,6 +45,9 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
       .zoom = 2 * width,
     },
     .entities = ArenaPush(arena, sizeof(EntityList)),
+    .hand = CardListInit(arena, 0),
+    .discard = CardListInit(arena, 0),
+    .deck = CardListInit(arena, 30),
   };
 }
 
@@ -70,15 +73,34 @@ void WorldDraw(World *world) {
       }
 
       DrawRectangleV(tile_pos, (Vector2){1,1}, color);
-
     }
+    
 
 
     for (EachEntity(entity, world->entities->first)) {
       DrawRectangleV(entity->visual_pos, Vector2One(), GREEN);
     }
+
+    if (world->grabbing_card) {
+      Vector2 card_world_postion = GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera);
+      Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
+
+      WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
+        Rectangle card_target_rect = (Rectangle){
+          .x = card_target_coord.x,
+          .y = card_target_coord.y,
+          .width = 1,
+          .height = 1,
+        };
+        DrawLineEx(card_world_postion, Vector2FromWorldCoord(card_target_coord), 0.05, RED);
+        DrawRectangleLinesEx(card_target_rect, 0.1, RED);
+    }
   }
   EndMode2D();
+
+
+  if (world->grabbing_card)
+    CardDraw(world->grabbing_card);
 }
 
 void WorldUpdateFrame(World *world, Arena *temp_arena) {

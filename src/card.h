@@ -5,7 +5,6 @@
 #define CARD_H
 
 #include "arena.h"
-#include "world.h"
 #include <raylib.h>
 
 #define DefaultCardSize (Vector2){200, 300}

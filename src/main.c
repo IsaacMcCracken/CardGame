@@ -23,8 +23,7 @@
 // Item Cards
 // - weapons - each character can hold one weapon at a time
 
-#define EachCardNode(it, first) Card *it = (first); it != NULL; it = it->next
-#define EachCardNodeReverse(it, last) Card *it = (last); it != NULL; it = it->prev
+
 
 int main() {
 
@@ -42,6 +41,7 @@ int main() {
 
   Entity *player = EntityAlloc(arena, world.entities, "kaiden");
 
+  Entity *grabbing_entity = NULL;
   Card *grabbing_card = NULL;
   while (!WindowShouldClose()) {
     // Update 
@@ -92,23 +92,7 @@ int main() {
       WorldDraw(&world);
       WorldUpdateFrame(&world, temp_arena);
       CardListHandDraw(hand);
-      if (grabbing_card) {
-        CardDraw(grabbing_card);
-        Vector2 card_world_postion = GetScreenToWorld2D(grabbing_card->screen_position, world.camera);
-        Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
 
-        WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
-        BeginMode2D(world.camera);
-          Rectangle card_target_rect = (Rectangle){
-            .x = card_target_coord.x,
-            .y = card_target_coord.y,
-            .width = 1,
-            .height = 1,
-          };
-          DrawLineEx(card_world_postion, Vector2FromWorldCoord(card_target_coord), 0.05, RED);
-          DrawRectangleLinesEx(card_target_rect, 0.1, RED);
-        EndMode2D();
-      }
 
     EndDrawing();
   }
