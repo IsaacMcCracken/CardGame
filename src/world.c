@@ -86,15 +86,15 @@ void WorldUpdateFrame(World *world, Arena *temp_arena) {
   Vector2 mouse_pos = GetMousePosition();
   Vector2 mouse_world_pos = GetScreenToWorld2D(mouse_pos, world->camera);
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
-  // if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-  //   const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-  //   world->tiles[index] = Tile_wall;
-  // }
+  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+    world->tiles[index] = Tile_wall;
+  }
 
-  // if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-  //   const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-  //   world->tiles[index] = Tile_void;
-  // }
+  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+    const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+    world->tiles[index] = Tile_void;
+  }
 
   BeginMode2D(world->camera);
 
@@ -102,13 +102,10 @@ void WorldUpdateFrame(World *world, Arena *temp_arena) {
   WorldCoordList *path_list = FindPath(world, temp_arena, (WorldCoord){0,0}, mouse_world_coord, 0);
   U64 arena_size_afer = temp_arena->pos;
 
-  if (path_list == NULL) 
-    TraceLog(LOG_DEBUG, "What happened here");
+  if (path_list) 
+    WorldCoordListDraw(world, path_list);
 
-
-  WorldCoordListDraw(world, path_list);
-
-  // TraceLog(LOG_INFO, "Bytes Per Path Find: %lu", arena_size_afer - arena_size_before);
+  TraceLog(LOG_NONE, "Bytes Per Path Find: %lu", arena_size_afer - arena_size_before);
   EndMode2D();
 
   

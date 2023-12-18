@@ -40,6 +40,8 @@ int main() {
 
   World world = WorldInit(arena, 20, 20);
 
+  world.tiles[57] = Tile_wall;
+
   Entity *player = EntityAlloc(arena, world.entities, "kaiden");
 
   Card *grabbing_card = NULL;
