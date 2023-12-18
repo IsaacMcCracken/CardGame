@@ -134,7 +134,7 @@ WorldCoordList *WorldCoordListFromAStar(Arena *arena, AStarNode *end_node) {
 }
 
 // This function can return null 
-WorldCoordList *FindPath(
+WorldCoordList *WorldCoordListFindPath(
   World *world,
   Arena *turn_arena,
   WorldCoord start,

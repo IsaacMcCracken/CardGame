@@ -4,6 +4,7 @@
 #include <basetypes.h>
 #include <raylib.h>
 #include "arena.h"
+#include "agent.h"
 
 #define ENTITY_NAME_SIZE 64
 
@@ -39,6 +40,7 @@ struct Entity {
   WorldCoord grid_pos;
   Vector2 visual_pos;
 
+  WorldCoordList *path;
   EntityFlags flags;
 };
 
