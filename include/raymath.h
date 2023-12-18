@@ -78,7 +78,7 @@
 #endif
 
 #ifndef EPSILON
-    #define EPSILON 0.0001f
+    #define EPSILON 0.01f
 #endif
 
 #ifndef DEG2RAD

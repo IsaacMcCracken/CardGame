@@ -1,6 +1,4 @@
-
-#ifndef BASETYPES_H
-#define BASETYPES_H
+#pragma once
 
 // Unsigned Integers
 typedef unsigned char U8;
@@ -24,8 +22,8 @@ struct WorldCoord {
   I32 y;
 };
 
-#ifndef NULL
-  #define NULL 0
-#endif
-
-#endif // BASETYPES_H
+typedef struct WorldCoordList WorldCoordList;
+struct WorldCoordList {
+  WorldCoord *ptr;
+  U64 len;
+};
