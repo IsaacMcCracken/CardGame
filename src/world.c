@@ -212,7 +212,7 @@ void WorldUpdateFrame(
       WorldCoord path_target_coord = entity->path->ptr[entity->path_index];
       Vector2 path_target_vector = Vector2FromWorldCoord(path_target_coord);
       Vector2 path_target_direction = 
-        Vector2Scale(Vector2Normalize(Vector2Subtract(path_target_vector, entity->visual_pos)), 0.01);
+        Vector2Scale(Vector2Normalize(Vector2Subtract(path_target_vector, entity->visual_pos)), 0.001);
 
       entity->visual_pos = Vector2Add(entity->visual_pos, path_target_direction);
       

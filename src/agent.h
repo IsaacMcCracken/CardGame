@@ -11,4 +11,4 @@ WorldCoordList *WorldCoordListFindPath(
   U32 max_iterations
 );
 
-void WorldCoordListDraw(World *world, WorldCoordList *list);
+void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start);
