@@ -247,9 +247,9 @@ WorldCoordList *WorldCoordListFindPath(
   return NULL;
 }
 
-void WorldCoordListDraw(World *world, WorldCoordList *list) {
+void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
 
-  for (U32 i = 0; i < list->len - 1; i++) {
+  for (U32 i = start; i < list->len - 1; i++) {
     Vector2 start = Vector2Add(Vector2FromWorldCoord(list->ptr[i]), (Vector2){0.5, 0.5});    
     Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
 

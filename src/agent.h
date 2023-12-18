@@ -1,6 +1,6 @@
 // This is is where code for ai behaivior to go goes.
 
-#include "arena.h"
+
 #include "world.h"
 
 WorldCoordList *WorldCoordListFindPath(
