@@ -82,32 +82,29 @@ void EntityUpdate(EntityList *list, Arena *perm_arena) {
       Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
       Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed);
 
+      F32 velocity_sqr = Vector2LengthSqr(velocity);
+      F32 delta_sqr = Vector2LengthSqr(delta);
+      while (velocity_sqr > delta_sqr && entity->path_index < entity->path->len) {
+        entity->visual_pos = vector_current_target;
 
-      F32 velocity_sqr = Vector2LengthSqr(velocity), delta_sqr = Vector2LengthSqr(delta);
-      while (velocity_sqr > delta_sqr) {
-        // Update to next node
+
+        //think about this some
+        if (entity->path_index < entity->path->len - 1)
+          entity->path_index += 1;
+        else break;
+
         F32 distance_left = sqrtf(velocity_sqr - delta_sqr);
+
         coord_current_target = entity->path->ptr[entity->path_index];
         vector_current_target = Vector2FromWorldCoord(coord_current_target);
-        entity->visual_pos = vector_current_target;
-        // if we are at the last spot in path list we stop;
-        if (entity->path_index >= entity->path->len - 1) {
-          goto stop_path; // please don't use gotos
-        }
 
-
-        
-        
-        
         delta = Vector2Subtract(vector_current_target, entity->visual_pos);
-        velocity = Vector2Scale(Vector2Normalize(delta), distance_left);
+        velocity = Vector2Scale(Vector2Normalize(delta), speed);
 
+    
 
-        velocity_sqr = Vector2LengthSqr(velocity); 
+        velocity_sqr = Vector2LengthSqr(velocity);
         delta_sqr = Vector2LengthSqr(delta);
-        
-
-        entity->path_index += 1;
       }
         
       entity->visual_pos = Vector2Add(entity->visual_pos, velocity);
