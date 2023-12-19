@@ -1,5 +1,6 @@
 #include "world.h"
 #include "agent.h"
+#include "game.h"
 #include <raymath.h>
 
 // Coordinate Type Conversion Functions 
@@ -36,7 +37,7 @@ U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord) {
   return coord.x + coord.y * world->width;
 }
 
-U8 WorldCoordEqual(WorldCoord a, WorldCoord b) {
+bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
   return a.x == b.x && a.y == b.y;
 }
 
@@ -124,6 +125,10 @@ void WorldDraw(World *world) {
   CardListHandDraw(world->hand);
   if (world->grabbing_card)
     CardDraw(world->grabbing_card);
+
+  if (world->mode == WorldMode_edit) 
+    DrawText("Editing", 5, 5, 20, WHITE);
+  
 }
 
 
@@ -152,79 +157,10 @@ void WorldUpdateFrame(
     }
   }
 
-  if (world->mode == WorldMode_game) {
-    for (EachCardNodeReverse(card, world->hand->last)) {
-      if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){
-        .x = card->screen_position.x,
-        .y = card->screen_position.y,
-        .width = 200,
-        .height = 300})) {
+  if (world->mode == WorldMode_game) 
+    GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !world->grabbing_card) {
-          world->grabbing_card = CardListRemove(world->hand, card);
-          
-        } else 
-          card->screen_position = Vector2Lerp(
-            card->screen_position,
-            (Vector2){
-              card->screen_position.x,
-              GetScreenHeight() - 600},
-              GetFrameTime() * 1.0
-          );
-
-        break;        
-      } 
-    }
-
-    // this is garbage will clean up later
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
-      world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
-    } else if (world->grabbing_card) {
-      CardListAppend(world->hand, world->grabbing_card);
-      world->grabbing_card = NULL;
-    } else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_world_coord);
-
-      if (entity_clicked) {
-        world->grabbing_entity = entity_clicked;
-      } else if (world->grabbing_entity) {
-        Entity *e = world->grabbing_entity;
-        
-        e->path = WorldCoordListFindPath(world, turn_arena, e->grid_pos, mouse_world_coord, 0);
-        e->path_index = 0;
-      }
-    } 
-
-    
-
-    I32 c = GetCharPressed();
-
-    if (c >= '0' && c <= '9') {
-      c = c - '0';
-      CardListPopAppend(world->hand, world->deck, c);
-    }
-
-
-  }
-
-  for (EachEntity(entity, world->entities->first)) {
-    if (entity->path) {
-      WorldCoord path_target_coord = entity->path->ptr[entity->path_index];
-      Vector2 path_target_vector = Vector2FromWorldCoord(path_target_coord);
-      Vector2 path_target_direction = 
-        Vector2Scale(Vector2Normalize(Vector2Subtract(path_target_vector, entity->visual_pos)), 0.001);
-
-      entity->visual_pos = Vector2Add(entity->visual_pos, path_target_direction);
-      
-      entity->grid_pos = WorldCoordFromVector2(entity->visual_pos);
-
-      if (WorldCoordEqual(entity->grid_pos, path_target_coord) 
-        && entity->path_index < entity->path->len) 
-        entity->path_index += 1; 
-
-
-    }
-  }
+  EntityUpdate(world->entities, perm_arena);
   
 }
 

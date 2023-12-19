@@ -7,8 +7,8 @@ typedef unsigned long U32;
 typedef unsigned long long U64;
 
 // Signed Integers
-typedef signed short      I16;
 typedef signed char       I8;
+typedef signed short      I16;
 typedef signed long       I32;
 typedef signed long long  I64;
 
@@ -26,4 +26,11 @@ typedef struct WorldCoordList WorldCoordList;
 struct WorldCoordList {
   WorldCoord *ptr;
   U64 len;
+};
+
+
+typedef struct Timer Timer;
+struct Timer {
+  F64 start_time;
+  F64 end_time;
 };

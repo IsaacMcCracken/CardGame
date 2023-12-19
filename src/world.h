@@ -60,5 +60,6 @@ WorldCoord WorldCoordFromVector2(Vector2 v) ;
 WorldCoord WorldCoordFromIndex(World *world, U32 Index);
 U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord);
 Vector2 Vector2FromWorldCoord(WorldCoord coord);
+bool WorldCoordEqual(WorldCoord a, WorldCoord b);
 
 #endif
