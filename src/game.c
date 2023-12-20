@@ -70,64 +70,78 @@ void GamePlayUpdate(
 
 }
 
+#include <stdio.h>
+void EntityUpdatePathPosition(Entity *entity) {
+  const F32 speed = 10.0;
+
+  if (entity->path) {
+    WorldCoord coord_current_target = entity->path->ptr[entity->path_index];
+    Vector2 vector_current_target = Vector2FromWorldCoord(coord_current_target);
+    
+
+    Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
+    Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed * GetFrameTime());
+    F32 velocity_sqr = Vector2LengthSqr(velocity);
+
+    TraceLog(LOG_ALL, "dt: %f\n", sqrt(velocity_sqr));
+    
+    F32 delta_sqr = Vector2LengthSqr(delta);
+    while (velocity_sqr > delta_sqr && entity->path_index < entity->path->len) {
+      entity->visual_pos = vector_current_target;
+
+
+      //think about this some
+      if (entity->path_index < entity->path->len - 1)
+        entity->path_index += 1;
+      else break;
+
+      F32 distance_left = sqrtf(velocity_sqr - delta_sqr);
+
+      coord_current_target = entity->path->ptr[entity->path_index];
+      vector_current_target = Vector2FromWorldCoord(coord_current_target);
+
+      delta = Vector2Subtract(vector_current_target, entity->visual_pos);
+      velocity = Vector2Scale(Vector2Normalize(delta), distance_left);
+
+  
+
+      velocity_sqr = Vector2LengthSqr(velocity);
+      delta_sqr = Vector2LengthSqr(delta);
+    }
+      
+    entity->visual_pos = Vector2Add(entity->visual_pos, velocity);
+    entity->grid_pos = WorldCoordFromVector2(entity->visual_pos);
+    
+
+    // go to next path index
+    if (WorldCoordEqual(entity->grid_pos, coord_current_target))
+      entity->path_index += 1;
+
+    // stop condition
+    if (WorldCoordEqual(entity->grid_pos, coord_current_target) && entity->path_index >= entity->path->len) {
+      entity->path = NULL;
+      entity->path_index = 0;
+    }
+  } else {
+    Vector2 grid_position = Vector2FromWorldCoord(entity->grid_pos);
+    if (!Vector2Equals(entity->visual_pos, grid_position)) {
+      Vector2 delta = Vector2Subtract(grid_position, entity->visual_pos);
+      Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed * GetFrameTime());
+
+      if (Vector2LengthSqr(velocity) > Vector2LengthSqr(delta)) 
+        velocity = delta;
+      
+      entity->visual_pos = Vector2Add(entity->visual_pos, velocity);
+    }
+  }
+}
+
 void EntityUpdate(EntityList *list, Arena *perm_arena) {
   for (EachEntity(entity, list->first)) {
     // if the entity has a path we update its position
-    if (entity->path) {
-      const F32 speed = 0.005;
-      WorldCoord coord_current_target = entity->path->ptr[entity->path_index];
-      Vector2 vector_current_target = Vector2FromWorldCoord(coord_current_target);
-      
-
-      Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
-      Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed);
-
-      F32 velocity_sqr = Vector2LengthSqr(velocity);
-      F32 delta_sqr = Vector2LengthSqr(delta);
-      while (velocity_sqr > delta_sqr && entity->path_index < entity->path->len) {
-        entity->visual_pos = vector_current_target;
-
-
-        //think about this some
-        if (entity->path_index < entity->path->len - 1)
-          entity->path_index += 1;
-        else break;
-
-        F32 distance_left = sqrtf(velocity_sqr - delta_sqr);
-
-        coord_current_target = entity->path->ptr[entity->path_index];
-        vector_current_target = Vector2FromWorldCoord(coord_current_target);
-
-        delta = Vector2Subtract(vector_current_target, entity->visual_pos);
-        velocity = Vector2Scale(Vector2Normalize(delta), speed);
-
+    EntityUpdatePathPosition(entity);
+    
     
 
-        velocity_sqr = Vector2LengthSqr(velocity);
-        delta_sqr = Vector2LengthSqr(delta);
-      }
-        
-      entity->visual_pos = Vector2Add(entity->visual_pos, velocity);
-      entity->grid_pos = WorldCoordFromVector2(entity->visual_pos);
-      
-
-      // go to next path index
-      if (WorldCoordEqual(entity->grid_pos, coord_current_target))
-        entity->path_index += 1;
-
-
-
-
-
-
-      // stop condition
-      stop_path: 
-      if (WorldCoordEqual(entity->grid_pos, coord_current_target) && entity->path_index >= entity->path->len) {
-        entity->grid_pos = entity->path->ptr[entity->path->len - 1];
-        entity->visual_pos = Vector2FromWorldCoord(entity->grid_pos);
-        entity->path = NULL;
-        entity->path_index = 0;
-      }
-    }
   }
 }

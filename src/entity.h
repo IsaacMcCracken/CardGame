@@ -36,11 +36,14 @@ struct Entity {
   U32 health;
   U32 health_cap;
 
+
+
   WorldCoord grid_pos;
   Vector2 visual_pos;
 
   WorldCoordList *path;
   U32 path_index;
+  F32 path_ratio;
 
   EntityFlags flags;
 };
