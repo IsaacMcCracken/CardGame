@@ -25,15 +25,8 @@ struct Card {
   U16 data;
 };
 
-// typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
 
-typedef struct CardData CardData;
-struct CardData {
-  const char *name;
-  const char *description;
-  CardCostType cost_type;
-  // CardFn method;
-};
+
 
 typedef struct CardList CardList;
 struct CardList {

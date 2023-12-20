@@ -29,7 +29,7 @@ int main() {
 
   TraceLogLevel(LOG_ALL);
   InitWindow(800, 800, "Card Game");
-
+  SetTargetFPS(60);
   // This is all of our memory management 
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
   Arena *turn_arena = ArenaInit(Megabyte(100)); // This is for allocations that will only last a turn *eg. A path list
@@ -54,7 +54,7 @@ int main() {
       ClearBackground(BLACK);
       
       WorldDraw(&world);
-
+      DrawFPS(0,0);
 
     EndDrawing();
   }

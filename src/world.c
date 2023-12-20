@@ -93,6 +93,9 @@ void WorldDraw(World *world) {
         .x = entity->visual_pos.x,
         .y = entity->visual_pos.y,
       };
+
+      DrawTextEx(GetFontDefault(), entity->name_buffer, Vector2Subtract(entity->visual_pos, (Vector2){0,0.2}), 0.2, 0.1, WHITE);
+
       DrawRectangleRec(entity_rect, SKYBLUE);
       if (entity == world->grabbing_entity) {
         DrawRectangleLinesEx(entity_rect, 0.05, GREEN );
