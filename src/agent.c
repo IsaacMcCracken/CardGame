@@ -1,6 +1,6 @@
 #include "agent.h"
 #include "raymath.h"
-
+#include <stdlib.h>
 #include <assert.h>
 
 typedef struct AStarNode AStarNode;
@@ -23,11 +23,11 @@ struct AStarList {
 
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   // dont be scared this is just the absolute distance
-  U32 distance_x = abs(a->coord.x - b->coord.x);
-  U32 distance_y = abs(a->coord.y - b->coord.y);
+  U32 distance_x = labs(a->coord.x - b->coord.x);
+  U32 distance_y = labs(a->coord.y - b->coord.y);
 
   if (distance_x > distance_y)
-    return 14 * distance_y + 10 * (distance_x - distance_y);
+    return 14 * distance_y + 10 * (distance_x - distance_y); // 14 = ~10*sqrt(2)
 
   return 14 * distance_x + 10 * (distance_y - distance_x);
 }

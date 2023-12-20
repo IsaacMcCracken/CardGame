@@ -3,7 +3,7 @@
 
 #include "card.h"
 
-#define MAX_CARD_ARCHETYPES 2
+#define MAX_CARD_ARCHETYPES 3
 const CardData card_archetypes[MAX_CARD_ARCHETYPES];
 
 #endif
