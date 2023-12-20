@@ -10,5 +10,10 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
     .name = "Array of Arrows",
     .cost_type = CardCostType_action,
     .description = "Use a character to target a foe to shoot an many arrows."
-  }
+  },
+  {
+    .name = "Health Potion",
+    .cost_type = CardCostType_bonus_action,
+    .description = "Give player more health"
+  },
 };

@@ -34,3 +34,7 @@ struct Timer {
   F64 start_time;
   F64 end_time;
 };
+
+#ifndef NULL
+  #define NULL 0
+#endif
