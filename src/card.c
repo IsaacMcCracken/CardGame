@@ -34,12 +34,16 @@ void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
   
   
   U64 current_count = 0;
-  while (slice_first &&  current_count <= count) {
+  while (slice_first &&  current_count < count) {
     slice_first->screen_position = (Vector2){GetScreenWidth(), GetScreenHeight()};
-    current_count += 1;
 
-    if (current_count < count)
+    
+
+    current_count += 1;
+    if (current_count < count) {
       slice_first = slice_first->prev;
+    }
+
   }
 
   Card *new_last = slice_first->prev;

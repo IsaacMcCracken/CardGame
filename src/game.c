@@ -44,13 +44,17 @@ void GamePlayUpdate(
   if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
     world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
   } else if (world->grabbing_card) {
-    WorldCoord target_coord = WorldCoordFromVector2(Vector2Subtract(world->grabbing_card->screen_position, Vector2One()));
+    WorldCoord target_coord = WorldCoordFromVector2(Vector2Subtract(GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera), Vector2One()));
     Entity *target = EntityFindByWorldCoord(world->entities, target_coord);
 
+      TraceLog(LOG_INFO, "Coord: (%i, %i)", target_coord.x, target_coord.y);
     if (target)  {
       CardData card = card_archetypes[world->grabbing_card->data];
       CardListAppend(world->discard, world->grabbing_card);
-      card.method(world, &target_coord, target, NULL);
+      if (card.method) {
+        TraceLog(LOG_INFO, "This card has a method");
+        card.method(world, &target_coord, world->grabbing_entity, target);
+      } else TraceLog(LOG_INFO, "This card does not have a method");
 
     } else {
       CardListAppend(world->hand, world->grabbing_card);
@@ -81,30 +85,38 @@ void GamePlayUpdate(
 
 }
 
-#include <stdio.h>
 void EntityUpdatePathPosition(Entity *entity) {
   const F32 speed = 10.0;
 
   if (entity->path) {
-    WorldCoord coord_current_target = entity->path->ptr[entity->path_index];
+    WorldCoord coord_end = entity->path->ptr[entity->path->len - 1];
+    Vector2 vector_end = Vector2FromWorldCoord(coord_end);
+
+    // cursed
+    WorldCoord coord_current_target = (entity->path_index < entity->path->len)? entity->path->ptr[entity->path_index]: coord_end;
     Vector2 vector_current_target = Vector2FromWorldCoord(coord_current_target);
     
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
-    Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed * GetFrameTime());
+
+    F32 delta_p = speed/60;
+
+    Vector2 velocity = Vector2Scale(Vector2Normalize(delta), delta_p);
     F32 velocity_sqr = Vector2LengthSqr(velocity);
 
     TraceLog(LOG_ALL, "dt: %f\n", sqrt(velocity_sqr));
     
     F32 delta_sqr = Vector2LengthSqr(delta);
-    while (velocity_sqr > delta_sqr && entity->path_index < entity->path->len) {
+    while (velocity_sqr > delta_sqr) {
       entity->visual_pos = vector_current_target;
 
 
       //think about this some
-      if (entity->path_index < entity->path->len - 1)
+      if (entity->path_index < entity->path->len)
         entity->path_index += 1;
-      else break;
+      else {
+        goto stop_path;
+      }
 
       F32 distance_left = sqrtf(velocity_sqr - delta_sqr);
 
@@ -125,26 +137,18 @@ void EntityUpdatePathPosition(Entity *entity) {
     
 
     // go to next path index
-    if (WorldCoordEqual(entity->grid_pos, coord_current_target))
-      entity->path_index += 1;
+    if (WorldCoordEqual(entity->grid_pos, coord_current_target) && entity->path_index <  entity->path->len)
+      entity->path_index += 1 ;
 
     // stop condition
-    if (WorldCoordEqual(entity->grid_pos, coord_current_target) && entity->path_index >= entity->path->len) {
+    if (Vector2Equals(entity->visual_pos, vector_end)) {
+      stop_path:
+      entity->visual_pos = vector_end;
+      entity->grid_pos = coord_end;
       entity->path = NULL;
       entity->path_index = 0;
     }
-  } else {
-    Vector2 grid_position = Vector2FromWorldCoord(entity->grid_pos);
-    if (!Vector2Equals(entity->visual_pos, grid_position)) {
-      Vector2 delta = Vector2Subtract(grid_position, entity->visual_pos);
-      Vector2 velocity = Vector2Scale(Vector2Normalize(delta), speed * GetFrameTime());
-
-      if (Vector2LengthSqr(velocity) > Vector2LengthSqr(delta)) 
-        velocity = delta;
-      
-      entity->visual_pos = Vector2Add(entity->visual_pos, velocity);
-    }
-  }
+  } 
 }
 
 void EntityUpdate(EntityList *list, Arena *perm_arena) {

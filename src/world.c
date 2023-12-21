@@ -131,7 +131,26 @@ void WorldDraw(World *world) {
 
   if (world->mode == WorldMode_edit) 
     DrawText("Editing", 5, 5, 20, WHITE);
+
+  Rectangle discard_rect = (Rectangle){
+    .height = 80,
+    .width = 80,
+    .x =  10,
+    .y = GetScreenHeight() - 90,
+  };
+
+  Rectangle deck_rect = (Rectangle){
+    .height = 80,
+    .width = 80,
+    .x =  GetScreenWidth() - 90,
+    .y = GetScreenHeight() - 90,
+  };
+
+  DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
+  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
   
+  DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
+  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
 }
 
 

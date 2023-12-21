@@ -31,12 +31,10 @@ struct Entity {
   Entity *next;
   Entity *prev;
 
-  U8 name_buffer[ENTITY_NAME_SIZE];
+  char name_buffer[ENTITY_NAME_SIZE];
   U8 name_len;
   U32 health;
   U32 health_cap;
-
-
 
   WorldCoord grid_pos;
   Vector2 visual_pos;
