@@ -4,7 +4,12 @@
 #include "card.h"
 #include "world.h"
 
-// World is the world The first entity is your entity and the other is the target
+
+/*
+World is your world
+first entity is the currently selected entity
+second is the secondary target
+*/
 typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
 
 typedef struct CardData CardData;

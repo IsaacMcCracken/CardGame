@@ -2,6 +2,7 @@
 #include "agent.h"
 #include "game.h"
 #include <raymath.h>
+#include <stdio.h>
 
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
@@ -95,6 +96,10 @@ void WorldDraw(World *world) {
       };
 
       DrawTextEx(GetFontDefault(), entity->name_buffer, Vector2Subtract(entity->visual_pos, (Vector2){0,0.2}), 0.2, 0.1, WHITE);
+
+      char health_buff[10]; // max size for u32 is 10 digits
+      sprintf(health_buff, "health: %lu", entity->health);
+      DrawTextEx(GetFontDefault(), health_buff, Vector2Add(entity->visual_pos, (Vector2){0, 1}), 0.2, 0.1, WHITE); // show health
 
       DrawRectangleRec(entity_rect, SKYBLUE);
       if (entity == world->grabbing_entity) {
