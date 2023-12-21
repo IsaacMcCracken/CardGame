@@ -1,5 +1,6 @@
 #include "game.h"
 #include "agent.h"
+#include "card_types.h"
 
 #include <raymath.h>
 
@@ -43,7 +44,17 @@ void GamePlayUpdate(
   if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
     world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
   } else if (world->grabbing_card) {
-    CardListAppend(world->hand, world->grabbing_card);
+    WorldCoord target_coord = WorldCoordFromVector2(Vector2Subtract(world->grabbing_card->screen_position, Vector2One()));
+    Entity *target = EntityFindByWorldCoord(world->entities, target_coord);
+
+    if (target)  {
+      CardData card = card_archetypes[world->grabbing_card->data];
+      CardListAppend(world->discard, world->grabbing_card);
+      card.method(world, &target_coord, target, NULL);
+
+    } else {
+      CardListAppend(world->hand, world->grabbing_card);
+    }
     world->grabbing_card = NULL;
   } else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_coord);
