@@ -4,6 +4,7 @@
 #include "arena.h"
 
 
+
 Arena *ArenaInit(U64 capacity) {
   capacity = (capacity < Kilobyte(4))? Kilobyte(4):capacity;
   void *ptr = malloc(capacity);
@@ -16,6 +17,7 @@ Arena *ArenaInit(U64 capacity) {
   
   return arena;
 }
+
 
 void *ArenaPushNoZero(Arena *arena, U64 size) {
   while (arena->pos + size > arena->cap) {
@@ -35,16 +37,18 @@ void *ArenaPushNoZero(Arena *arena, U64 size) {
   return result;
 }
 
+
 void *ArenaPush(Arena *arena, U64 size) {
   void *result = ArenaPushNoZero(arena, size);
   memset(result, 0, size);
   return result;
 }
 
+
 void ArenaReset(Arena *arena) {
   arena->pos = 0;
-
 }
+
 
 TempArena TempArenaInit(Arena *backing_arena) {
   return (TempArena){
@@ -52,6 +56,7 @@ TempArena TempArenaInit(Arena *backing_arena) {
     .pos = backing_arena->pos,
   };
 }
+
 
 void TempArenaDeinit(TempArena temp_arena) {
   temp_arena.arena->pos = temp_arena.pos;

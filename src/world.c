@@ -4,6 +4,8 @@
 #include <raymath.h>
 #include <stdio.h>
 
+
+
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
   return (Vector2){
@@ -12,6 +14,7 @@ Vector2 Vector2FromWorldIndex(World *world, U32 index) {
   };
 }
 
+
 Vector2 Vector2FromWorldCoord(WorldCoord coord) {
   return (Vector2) {
     .x = (F32)coord.x,
@@ -19,9 +22,11 @@ Vector2 Vector2FromWorldCoord(WorldCoord coord) {
   };
 }
 
+
 WorldCoord WorldCoordFromVector2(Vector2 v) {
   return (WorldCoord){v.x, v.y};
 }
+
 
 WorldCoord WorldCoordFromIndex(World *world, U32 index) {
   return (WorldCoord){
@@ -30,17 +35,21 @@ WorldCoord WorldCoordFromIndex(World *world, U32 index) {
   };
 }
 
+
 U32 WorldIndexFromVector2(World *world, Vector2 v) {
   return (U32)v.x + (U32)v.y * world->width;
 }
+
 
 U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord) {
   return coord.x + coord.y * world->width;
 }
 
+
 bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
   return a.x == b.x && a.y == b.y;
 }
+
 
 
 World WorldInit(Arena *arena, U32 width, U32 height) {
@@ -58,13 +67,18 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
   };
 }
 
+
+
 void WorldLoad(World *world, Arena* arena, const char *filepath) {
   // TODO: implement this function
 }
 
+
 void WorldSave(World *world, const char *filepath) {
   // TODO: implement this function
 }
+
+
 
 void WorldDraw(World *world) {
   BeginMode2D(world->camera);
@@ -80,9 +94,14 @@ void WorldDraw(World *world) {
           break;
       }
 
+<<<<<<< HEAD
       
     }
     
+=======
+      DrawRectangleV(tile_pos, (Vector2){1,1}, color);
+    }  
+>>>>>>> bb5143896cd3a10cf755bd67156ae284cbc65361
 
 
     for (EachEntity(entity, world->entities->first)) {
@@ -167,7 +186,6 @@ void WorldDraw(World *world) {
 
 
 
-
 void WorldUpdateFrame(
   World *world,
   Arena *perm_arena, 
@@ -194,9 +212,9 @@ void WorldUpdateFrame(
   if (world->mode == WorldMode_game) 
     GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
 
-  EntityUpdate(world->entities, perm_arena);
-  
+  EntityUpdate(world->entities, perm_arena); 
 }
+
 
 void WorldUpdateWorld(World *world) {
   // TODO: implement this function

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
+
 typedef struct AStarNode AStarNode;
 struct AStarNode {
   AStarNode *prev_path; // previous node in the path
@@ -21,6 +23,7 @@ struct AStarList {
   U64 count;
 };
 
+
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   // dont be scared this is just the absolute distance
   U32 distance_x = labs(a->coord.x - b->coord.x);
@@ -32,9 +35,11 @@ U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   return 14 * distance_x + 10 * (distance_y - distance_x);
 }
 
+
 U32 AStarNodeFCost(AStarNode *node) {
   return node->g_cost + node->h_cost;
 }
+
 
 AStarNode *AStarNodeCreate(Arena *arena, WorldCoord coord) {
   AStarNode *result = ArenaPush(arena, sizeof(AStarNode));
@@ -42,6 +47,7 @@ AStarNode *AStarNodeCreate(Arena *arena, WorldCoord coord) {
   // calculate g_cost and h_cost
   return result;
 }
+
 
 void AStarListAppend(AStarList *list, AStarNode *node) {
   if (list->last) {
@@ -91,6 +97,7 @@ void AStarListRemove(AStarList *list, AStarNode *node) {
   }
 }
 
+
 AStarNode *AStarListFindByCoord(AStarList *list, WorldCoord coord) {
   AStarNode *node = list->first;
   while (node) {
@@ -132,6 +139,7 @@ WorldCoordList *WorldCoordListFromAStar(Arena *arena, AStarNode *end_node) {
   
   return list;
 }
+
 
 // This function can return null 
 WorldCoordList *WorldCoordListFindPath(
@@ -246,6 +254,7 @@ WorldCoordList *WorldCoordListFindPath(
   TraceLog(LOG_DEBUG, "Seriously what the fuck!");
   return NULL;
 }
+
 
 void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
 
