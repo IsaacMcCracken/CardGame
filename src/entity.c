@@ -60,3 +60,15 @@ void EntityFree(EntityList *list, Entity *entity) {
   entity->next = list->free_list;
   list->free_list = entity;
 }
+
+Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord) {
+  Entity *entity = NULL;
+  for (EachEntity(node, list->first)) {
+    if (coord.x == node->grid_pos.x && coord.y == node->grid_pos.y) {
+      entity = node;
+      break;
+    }
+  }
+
+  return entity;
+}

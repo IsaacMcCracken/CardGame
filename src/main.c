@@ -23,94 +23,39 @@
 // Item Cards
 // - weapons - each character can hold one weapon at a time
 
-#define EachCardNode(it, first) Card *it = (first); it != NULL; it = it->next
-#define EachCardNodeReverse(it, last) Card *it = (last); it != NULL; it = it->prev
+
 
 int main() {
 
   TraceLogLevel(LOG_ALL);
   InitWindow(800, 800, "Card Game");
-
-  Arena *arena = ArenaInit(Megabyte(100));
-  Arena *temp_arena = ArenaInit(Megabyte(100));
+  SetTargetFPS(60);
+  // This is all of our memory management 
+  Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
+  Arena *turn_arena = ArenaInit(Megabyte(100)); // This is for allocations that will only last a turn *eg. A path list
+  Arena *temp_arena = ArenaInit(Megabyte(100)); // this is for frame allocations any thing that is only for a frame
   
-  CardList *deck = CardListInit(arena, 30);
-  CardList *hand = CardListInit(arena, 0);
 
-
-  World world = WorldInit(arena, 20, 20);
+  World world = WorldInit(perm_arena, 20, 20);
 
   world.tiles[57] = Tile_wall;
 
-  Entity *player = EntityAlloc(arena, world.entities, "kaiden");
+  Entity *player = EntityAlloc(perm_arena, world.entities, "kaiden");
+  player->health_cap = 20;
 
-  Card *grabbing_card = NULL;
+
   while (!WindowShouldClose()) {
     // Update 
     ArenaReset(temp_arena);
     
-    Vector2 mouse_position = GetMousePosition();
-    for (EachCardNodeReverse(card, hand->last)) {
-      if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){
-        .x = card->screen_position.x,
-        .y = card->screen_position.y,
-        .width = 200,
-        .height = 300})) {
+    WorldUpdateFrame(&world, perm_arena, turn_arena, temp_arena);
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !grabbing_card) {
-          grabbing_card = CardListRemove(hand, card);
-          
-        } else 
-          card->screen_position = Vector2Lerp(
-            card->screen_position,
-            (Vector2){
-              card->screen_position.x,
-              GetScreenHeight() - 600},
-              GetFrameTime() * 1.0
-          );
-
-        break;        
-      } 
-    }
-
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && grabbing_card) {
-      grabbing_card->screen_position = Vector2Add(grabbing_card->screen_position, GetMouseDelta());
-    } else if (grabbing_card) {
-      CardListAppend(hand, grabbing_card);
-      grabbing_card = NULL;
-    }
-    
     // Draw 
     BeginDrawing();
       ClearBackground(BLACK);
       
-      int c = GetCharPressed();
-
-      if (c >= '0' && c <= '9') {
-        c = c - '0';
-        CardListPopAppend(hand, deck, c);
-      }
-
       WorldDraw(&world);
-      WorldUpdateFrame(&world, temp_arena);
-      CardListHandDraw(hand);
-      if (grabbing_card) {
-        CardDraw(grabbing_card);
-        Vector2 card_world_postion = GetScreenToWorld2D(grabbing_card->screen_position, world.camera);
-        Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
-
-        WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
-        BeginMode2D(world.camera);
-          Rectangle card_target_rect = (Rectangle){
-            .x = card_target_coord.x,
-            .y = card_target_coord.y,
-            .width = 1,
-            .height = 1,
-          };
-          DrawLineEx(card_world_postion, Vector2FromWorldCoord(card_target_coord), 0.05, RED);
-          DrawRectangleLinesEx(card_target_rect, 0.1, RED);
-        EndMode2D();
-      }
+      DrawFPS(0,0);
 
     EndDrawing();
   }

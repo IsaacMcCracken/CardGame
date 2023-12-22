@@ -4,7 +4,6 @@
 #include <basetypes.h>
 #include <raylib.h>
 #include "arena.h"
-#include "agent.h"
 
 #define ENTITY_NAME_SIZE 64
 
@@ -32,7 +31,7 @@ struct Entity {
   Entity *next;
   Entity *prev;
 
-  U8 name_buffer[ENTITY_NAME_SIZE];
+  char name_buffer[ENTITY_NAME_SIZE];
   U8 name_len;
   U32 health;
   U32 health_cap;
@@ -41,6 +40,9 @@ struct Entity {
   Vector2 visual_pos;
 
   WorldCoordList *path;
+  U32 path_index;
+  F32 path_ratio;
+
   EntityFlags flags;
 };
 
@@ -57,5 +59,5 @@ struct EntityList {
 
 
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);
-
+Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord);
 #endif // ENTITY_H

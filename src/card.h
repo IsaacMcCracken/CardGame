@@ -4,8 +4,8 @@
 #ifndef CARD_H 
 #define CARD_H
 
-#include "arena.h"
 #include <raylib.h>
+#include "arena.h"
 
 #define DefaultCardSize (Vector2){200, 300}
 

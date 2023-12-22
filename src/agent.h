@@ -3,7 +3,7 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-#include "arena.h"
+
 #include "world.h"
 
 WorldCoordList *WorldCoordListFindPath(
@@ -14,6 +14,5 @@ WorldCoordList *WorldCoordListFindPath(
   U32 max_iterations
 );
 
-void WorldCoordListDraw(World *world, WorldCoordList *list);
-
+void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start);
 #endif
