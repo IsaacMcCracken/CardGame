@@ -24,6 +24,13 @@ struct WorldCoord {
   I32 y;
 };
 
+typedef struct WorldCoordList WorldCoordList;
+struct WorldCoordList {
+  WorldCoord *ptr;
+  U64 len;
+}; 
+
+
 #ifndef NULL
   #define NULL 0
 #endif
