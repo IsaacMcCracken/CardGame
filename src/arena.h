@@ -10,6 +10,7 @@
 #define ARENA_DEFAULT_SIZE  Megabyte(1)
 
 
+
 typedef struct Arena Arena;
 struct Arena {
   char *buff;
@@ -20,12 +21,12 @@ struct Arena {
   U64 unused[3];
 };
 
+
 typedef struct TempArena TempArena;
 struct TempArena {
   Arena *arena;
   U64 pos;
 };
-
 
 
 Arena *ArenaInit(U64 capacity);
@@ -36,5 +37,6 @@ void *ArenaPush(Arena *arena, U64 size);
 
 TempArena TempArenaInit(Arena *backing_arena);
 void TempArenaDeinit(TempArena temp_arena);
+
 
 #endif // ME_ARENA_H

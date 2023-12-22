@@ -5,6 +5,7 @@
 #include "world.h"
 
 
+
 /*
 World is your world
 first entity is the currently selected entity
@@ -20,7 +21,9 @@ struct CardData {
   CardFn method;
 };
 
+
 #define MAX_CARD_ARCHETYPES 3
 const CardData card_archetypes[MAX_CARD_ARCHETYPES];
+
 
 #endif

@@ -4,6 +4,8 @@
 
 #include <raymath.h>
 
+
+
 void GamePlayUpdate(  
   World *world,
   Arena *perm_arena, 
@@ -78,11 +80,9 @@ void GamePlayUpdate(
     c = c - '0';
     CardListPopAppend(world->hand, world->deck, c);
   }
-
-
-
-
 }
+
+
 
 void EntityUpdatePathPosition(Entity *entity) {
   const F32 speed = 10.0;
@@ -150,12 +150,11 @@ void EntityUpdatePathPosition(Entity *entity) {
   } 
 }
 
+
+
 void EntityUpdate(EntityList *list, Arena *perm_arena) {
   for (EachEntity(entity, list->first)) {
     // if the entity has a path we update its position
     EntityUpdatePathPosition(entity);
-    
-    
-
   }
 }
