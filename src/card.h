@@ -9,6 +9,8 @@
 
 #define DefaultCardSize (Vector2){200, 300}
 
+
+
 typedef U8 CardCostType;
 enum {
   CardCostType_no_cost = 0,
@@ -17,6 +19,7 @@ enum {
   CardCostType_full_action,
 };
 
+
 typedef struct Card Card;
 struct Card {
   Card *next;
@@ -24,6 +27,7 @@ struct Card {
   Vector2 screen_position;
   U16 data;
 };
+
 
 typedef struct CardList CardList;
 struct CardList {
@@ -47,5 +51,6 @@ Card *CardListRemove(CardList *list, Card* card);
 // Card Macros
 #define EachCardNode(it, first) Card *it = (first); it != NULL; it = it->next
 #define EachCardNodeReverse(it, last) Card *it = (last); it != NULL; it = it->prev
+
 
 #endif

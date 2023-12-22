@@ -58,5 +58,4 @@ int main() {
 
     EndDrawing();
   }
-  
 }

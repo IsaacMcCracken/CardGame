@@ -5,6 +5,8 @@
 #include <string.h>
 #include <raymath.h>
 
+
+
 void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
   Card *slice_first = from->last;
   Card *slice_last = from->last;
@@ -75,11 +77,7 @@ void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
         from->count -= current_count;
 
   }
-
-  
 }
-
-
 
 
 void CardDraw(Card *card) {
@@ -101,7 +99,6 @@ void CardDraw(Card *card) {
   DrawText(card_archetypes[card->data].name, card->screen_position.x + 10, card->screen_position.y + 10, 20, BLACK);
   DrawTextInRectangle(GetFontDefault(), card_archetypes[card->data].description, description_rect, 15, BLACK);
 }
-
 
 
 void CardListHandDraw(CardList *hand) {
@@ -127,6 +124,8 @@ void CardListHandDraw(CardList *hand) {
   
 };
 
+
+
 CardList *CardListInit(Arena *arena, U32 count) {
   CardList *deck = ArenaPush(arena, sizeof(CardList));
   if (count == 0) {
@@ -143,7 +142,6 @@ CardList *CardListInit(Arena *arena, U32 count) {
   {
 
 
-
     cards[i].data = GetRandomValue(0, MAX_CARD_ARCHETYPES - 1);
 
     if (i > 0)
@@ -154,6 +152,7 @@ CardList *CardListInit(Arena *arena, U32 count) {
 
   return deck;
 }
+
 
 // This function takes a 
 void CardListShuffle(Arena *temp_arena, CardList *list) {
@@ -206,6 +205,7 @@ void CardListShuffle(Arena *temp_arena, CardList *list) {
   TempArenaDeinit(temp);
 } 
 
+
 void CardListAppend(CardList *list, Card *card) {
   if (list->last) {
     Card *last = list->last;
@@ -219,6 +219,7 @@ void CardListAppend(CardList *list, Card *card) {
     list->count = 1;
   }
 }
+
 
 // please make sure when calling function that the card 
 // is in the list.
@@ -246,7 +247,6 @@ Card *CardListRemove(CardList *list, Card* card) {
     list->first = NULL;
     list->last = NULL;
   }
-
 
   return card;
 }
