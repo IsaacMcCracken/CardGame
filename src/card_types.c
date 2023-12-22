@@ -1,5 +1,7 @@
 #include "card_types.h"
 #include "card_types/card_misc.h"
+
+#include "card_types/card_misc.h"
 const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
   {
     .name = "Battle Inspiration",
@@ -15,6 +17,7 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
   {
     .name = "Health Potion",
     .cost_type = CardCostType_bonus_action,
-    .description = "Give player more health"
-  },
+    .description = "Give player more health",
+    .method = CardFnHealthPotion
+  }
 };

@@ -41,6 +41,7 @@ int main() {
   world.tiles[57] = Tile_wall;
 
   Entity *player = EntityAlloc(perm_arena, world.entities, "kaiden");
+  player->health_cap = 20;
 
 
   while (!WindowShouldClose()) {
