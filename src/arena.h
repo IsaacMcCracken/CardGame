@@ -1,42 +1,39 @@
 #ifndef ME_ARENA
 #define ME_ARENA
 
-#include <basetypes.h>
+#define Kilo(x) ((x)<<10)
+#define Mega(x) ((x)<<20)
+#define Giga(x) (((unsigned long long)(x))<<30)
 
-#define Kilobyte(x) ((x)<<10)
-#define Megabyte(x) ((x)<<20)
-#define Gigabyte(x) (((U64)(x))<<30)
-
-#define ARENA_DEFAULT_SIZE  Megabyte(1)
-
+#define ARENA_DEFAULT_SIZE  Mega(1)
 
 
 typedef struct Arena Arena;
 struct Arena {
   char *buff;
-  U64 pos;
-  U64 cap;
-  U64 align;
+  unsigned long long pos;
+  unsigned long long cap;
+  unsigned long long align;
   Arena *next;
-  U64 unused[3];
 };
-
 
 typedef struct TempArena TempArena;
 struct TempArena {
   Arena *arena;
-  U64 pos;
+  unsigned long long pos;
 };
 
 
-Arena *ArenaInit(U64 capacity);
+
+Arena *ArenaInit(unsigned long long capacity);
 void ArenaDeinit(Arena *arena);
-void ArenaReset(Arena *arena);
-void *ArenaPushNoZero(Arena *arena, U64 size);
-void *ArenaPush(Arena *arena, U64 size);
+void *ArenaPushNoZero(Arena *arena, unsigned long long size);
+void *ArenaPush(Arena *arena, unsigned long long size);
+void *ArenaReset(Arena *arena);
 
 TempArena TempArenaInit(Arena *backing_arena);
-void TempArenaDeinit(TempArena temp_arena);
+TempArena TempArenaDeinit(TempArena temp_arena);
 
 
-#endif // ME_ARENA_H
+
+#endif
