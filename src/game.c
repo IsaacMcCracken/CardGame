@@ -60,6 +60,7 @@ void GamePlayUpdate(
       CardListAppend(world->hand, world->grabbing_card);
     }
     world->grabbing_card = NULL;
+
   } else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_coord);
     if (entity_clicked) {
@@ -69,7 +70,6 @@ void GamePlayUpdate(
       e->path = WorldCoordListFindPath(world, turn_arena, e->grid_pos, mouse_coord, 0);
     }
   } 
-
   
 
   I32 c = GetCharPressed();
@@ -78,7 +78,6 @@ void GamePlayUpdate(
     c = c - '0';
     CardListPopAppend(world->hand, world->deck, c);
   }
-
 
 
 
