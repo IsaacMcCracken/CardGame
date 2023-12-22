@@ -28,7 +28,7 @@
 int main() {
 
   TraceLogLevel(LOG_ALL);
-  InitWindow(800, 800, "Card Game");
+  InitWindow(1600, 900, "Card Game");
   SetTargetFPS(60);
   // This is all of our memory management 
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
@@ -42,7 +42,6 @@ int main() {
 
   Entity *player = EntityAlloc(perm_arena, world.entities, "kaiden");
   player->health_cap = 20;
-
 
   while (!WindowShouldClose()) {
     // Update 

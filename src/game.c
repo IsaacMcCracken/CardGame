@@ -1,8 +1,44 @@
 #include "game.h"
 #include "agent.h"
+#include "util.h"
 #include "card_types.h"
 
 #include <raymath.h>
+
+
+void CameraUpdate(World *world) {
+  Vector2 direction = Vector2Zero();
+
+  if (IsKeyDown(KEY_A)) direction.x -= 1;
+  if (IsKeyDown(KEY_D)) direction.x += 1;
+  if (IsKeyDown(KEY_W)) direction.y -= 1;
+  if (IsKeyDown(KEY_S)) direction.y += 1;
+
+  direction = Vector2Normalize(direction);
+
+
+  F32 speed = 3.0/world->camera.zoom;
+  direction = Vector2Scale(direction, speed);
+
+
+  world->camera.target = Vector2Add(world->camera.target, direction);
+
+  world->camera.zoom = Clamp(world->camera.zoom + GetMouseWheelMove(), 10, 160);
+
+  F32 wheel_move = GetMouseWheelMove();
+  if (wheel_move != 0) {
+
+    Vector2 screen_mouse_pos = GetMousePosition();
+    Vector2 world_mouse_pos = GetScreenToWorld2D(screen_mouse_pos, world->camera);
+
+    world->camera.offset = screen_mouse_pos;
+    world->camera.target = world_mouse_pos;
+
+    world->camera.zoom = Clamp(world->camera.zoom + wheel_move, 10, 160);
+  }
+
+
+}
 
 void GamePlayUpdate(  
   World *world,
@@ -13,6 +49,10 @@ void GamePlayUpdate(
   Vector2 mouse_screen_position = GetMousePosition();
   Vector2 mouse_world_position = GetScreenToWorld2D(mouse_screen_position, world->camera);
   WorldCoord mouse_coord = WorldCoordFromVector2(mouse_world_position);
+
+  // Navigation and Zoom
+  CameraUpdate(world);
+
 
   // Card Grabbing and UI Stuff
   {

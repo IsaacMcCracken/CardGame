@@ -3,6 +3,11 @@
 
 #include <basetypes.h>
 
+
+// Useful Macros
+#define Max(a, b) (a > b)? a : b
+#define Min(a, b) (a < b)? a : b
+
 // Node Macros
 
 

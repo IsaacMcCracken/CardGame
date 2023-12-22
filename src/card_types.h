@@ -1,7 +1,6 @@
 #ifndef CARD_TYPES_H
 #define CARD_TYPES_H
 
-#include "card.h"
 #include "world.h"
 
 

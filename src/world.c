@@ -72,14 +72,15 @@ void WorldDraw(World *world) {
     for (U32 i = 0; i < world->width * world->height; i++) {
       Vector2 tile_pos = Vector2FromWorldIndex(world, i);
 
-      Color color;
-
       switch (world->tiles[i]) {
-        case Tile_wall: color = DARKGRAY; break;
-        default: color = BLACK; break;
+        case Tile_wall: DrawRectangleV(tile_pos, (Vector2){1,1}, BLACK); break;
+        default: 
+          DrawRectangleV(tile_pos, (Vector2){1,1}, DARKGRAY);
+          DrawRectangleV(Vector2Add(tile_pos, (Vector2){0.05, 0.05}), (Vector2){0.9,0.9}, GRAY);
+          break;
       }
 
-      DrawRectangleV(tile_pos, (Vector2){1,1}, color);
+      
     }
     
 
@@ -107,55 +108,61 @@ void WorldDraw(World *world) {
       }
     }
 
-    if (world->grabbing_card) {
-      Vector2 card_world_postion = GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera);
-      Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
+    if (world->mode == WorldMode_game) {
+      if (world->grabbing_card) {
+        Vector2 card_world_postion = GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera);
+        Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
 
-      WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
-        Rectangle card_target_rect = (Rectangle){
-          .x = card_target_coord.x,
-          .y = card_target_coord.y,
-          .width = 1,
-          .height = 1,
-        };
-        DrawRectangleLinesEx(card_target_rect, 0.1, RED);
+        WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
+          Rectangle card_target_rect = (Rectangle){
+            .x = card_target_coord.x,
+            .y = card_target_coord.y,
+            .width = 1,
+            .height = 1,
+          };
+          DrawRectangleLinesEx(card_target_rect, 0.1, RED);
 
-        DrawLineEx(
-          card_world_postion, 
-          Vector2FromWorldCoord(WorldCoordFromVector2(card_world_postion)), 
-          0.07, 
-          RED
-        );
+          DrawLineEx(
+            card_world_postion, 
+            Vector2FromWorldCoord(WorldCoordFromVector2(card_world_postion)), 
+            0.07, 
+            RED
+          );
+      }
     }
+    EndMode2D();
+
+    CardListHandDraw(world->hand);
+    if (world->grabbing_card)
+      CardDraw(world->grabbing_card);
+
+    if (world->mode == WorldMode_edit) 
+      DrawText("Editing", 5, 5, 20, WHITE);
+
+    Rectangle discard_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  10,
+      .y = GetScreenHeight() - 90,
+    };
+
+    Rectangle deck_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 90,
+    };
+
+    DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    
+    DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
   }
-  EndMode2D();
 
-  CardListHandDraw(world->hand);
-  if (world->grabbing_card)
-    CardDraw(world->grabbing_card);
-
-  if (world->mode == WorldMode_edit) 
-    DrawText("Editing", 5, 5, 20, WHITE);
-
-  Rectangle discard_rect = (Rectangle){
-    .height = 80,
-    .width = 80,
-    .x =  10,
-    .y = GetScreenHeight() - 90,
-  };
-
-  Rectangle deck_rect = (Rectangle){
-    .height = 80,
-    .width = 80,
-    .x =  GetScreenWidth() - 90,
-    .y = GetScreenHeight() - 90,
-  };
-
-  DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
-  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
-  
-  DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
-  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+  if (world->mode == WorldMode_edit) {
+    
+  }
 }
 
 

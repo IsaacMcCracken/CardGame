@@ -25,8 +25,6 @@ struct Card {
   U16 data;
 };
 
-
-
 typedef struct CardList CardList;
 struct CardList {
   Card *first;
