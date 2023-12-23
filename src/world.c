@@ -166,12 +166,6 @@ void WorldDraw(World *world) {
       .x =  10,
       .y = GetScreenHeight() - 90,
     };
-    Rectangle discard_rect = (Rectangle){
-      .height = 80,
-      .width = 80,
-      .x =  10,
-      .y = GetScreenHeight() - 90,
-    };
 
     Rectangle deck_rect = (Rectangle){
       .height = 80,

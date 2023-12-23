@@ -28,3 +28,5 @@ void CardFnBattleInspiration(World *world, WorldCoord *coord, Entity *selected, 
   selected->action_count += 1;
   CardListPopAppend(world->hand, world->deck, 1);
 }
+
+#endif
