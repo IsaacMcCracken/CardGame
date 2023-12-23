@@ -8,6 +8,7 @@
 #define ENTITY_NAME_SIZE 64
 
 
+
 typedef struct EffectFlags EffectFlags;
 struct EffectFlags {
   U8 is_on_fire: 1;
@@ -18,6 +19,7 @@ struct EffectFlags {
   U8 is_electrified: 1;
 };
 
+
 typedef struct EntityFlags EntityFlags;
 struct EntityFlags {
   U8 is_flamable: 1;
@@ -25,6 +27,7 @@ struct EntityFlags {
   U8 is_wetable: 1; // is it able to get wet
   U8 __padding__ : 6;
 };
+
 
 typedef struct Entity Entity;
 struct Entity {
@@ -46,6 +49,7 @@ struct Entity {
   EntityFlags flags;
 };
 
+
 typedef struct EntityList EntityList;
 struct EntityList {
   Entity *first;
@@ -54,10 +58,15 @@ struct EntityList {
   U64 count;
 };
 
+
+
 // for loop entity iterator
 #define EachEntity(it, first) Entity *it = (first); it != NULL; it = it->next 
 
 
+
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);
 Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord);
+
+
 #endif // ENTITY_H

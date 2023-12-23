@@ -1,6 +1,8 @@
 #include "card_types.h"
 #include "card_types/card_misc.h"
 
+
+
 const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
   {
     .name = "Battle Inspiration",
