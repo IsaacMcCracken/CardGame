@@ -1,5 +1,3 @@
-#ifndef MISC_CARD_H
-#define MISC_CARD_H
 #include "../card_types.h"
 
 
@@ -28,5 +26,3 @@ void CardFnBattleInspiration(World *world, WorldCoord *coord, Entity *selected, 
   selected->action_count += 1;
   CardListPopAppend(world->hand, world->deck, 1);
 }
-
-#endif
