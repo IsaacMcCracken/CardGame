@@ -94,14 +94,9 @@ void WorldDraw(World *world) {
           break;
       }
 
-<<<<<<< HEAD
       
     }
     
-=======
-      DrawRectangleV(tile_pos, (Vector2){1,1}, color);
-    }  
->>>>>>> bb5143896cd3a10cf755bd67156ae284cbc65361
 
 
     for (EachEntity(entity, world->entities->first)) {
