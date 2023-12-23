@@ -1,0 +1,9 @@
+@card "Array Of Arrows" {
+  params(castor: Entity*, target: Entity*),
+  description: "You shoot arrows", 
+}
+
+@card "Change Name 2 Sexy" {
+  params(target: Entity*),
+  description: "there is a sexy",
+}
