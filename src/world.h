@@ -29,6 +29,7 @@ struct World {
   EntityList *entities;
   
   // player stuff
+  U32 turn_count;
   Entity *grabbing_entity;
   Card *grabbing_card;
   CardList *deck;

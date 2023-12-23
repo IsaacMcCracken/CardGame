@@ -20,7 +20,7 @@ struct CardData {
   CardFn method;
 };
 
-#define MAX_CARD_ARCHETYPES 3
+#define MAX_CARD_ARCHETYPES 4
 const CardData card_archetypes[MAX_CARD_ARCHETYPES];
 
 #endif

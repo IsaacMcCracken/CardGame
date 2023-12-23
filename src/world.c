@@ -1,8 +1,12 @@
+#define RAYGUI_IMPLEMENTATION
+
 #include "world.h"
 #include "agent.h"
 #include "game.h"
 #include <raymath.h>
-#include <stdio.h>
+#include <raygui.h>
+
+#include <stdio.h> // Please remove this
 
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
@@ -45,12 +49,14 @@ bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
 
 World WorldInit(Arena *arena, U32 width, U32 height) {
   return (World) {
+
     .width = width,
     .height = height,
     .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
     .camera = (Camera2D) {
       .zoom = 2 * width,
     },
+    .turn_count = 0,
     .entities = ArenaPush(arena, sizeof(EntityList)),
     .hand = CardListInit(arena, 0),
     .discard = CardListInit(arena, 0),
@@ -76,7 +82,7 @@ void WorldDraw(World *world) {
 
       switch (world->tiles[i]) {
         case Tile_wall: color = DARKGRAY; break;
-        default: color = BLACK; break;
+        default: color = DARKGREEN; break;
       }
 
       DrawRectangleV(tile_pos, (Vector2){1,1}, color);
@@ -97,9 +103,10 @@ void WorldDraw(World *world) {
 
       DrawTextEx(GetFontDefault(), entity->name_buffer, Vector2Subtract(entity->visual_pos, (Vector2){0,0.2}), 0.2, 0.1, WHITE);
 
+      // Kaiden: use TextFormat() instead.
       char health_buff[10]; // max size for u32 is 10 digits
       sprintf(health_buff, "health: %lu", entity->health);
-      DrawTextEx(GetFontDefault(), health_buff, Vector2Add(entity->visual_pos, (Vector2){0, 1}), 0.2, 0.1, WHITE); // show health
+      DrawTextEx(GetFontDefault(), health_buff, Vector2Add(entity->visual_pos, (Vector2){0, 1}), 0.4, 0.1, WHITE); // show health
 
       DrawRectangleRec(entity_rect, SKYBLUE);
       if (entity == world->grabbing_entity) {
@@ -129,33 +136,49 @@ void WorldDraw(World *world) {
     }
   }
   EndMode2D();
-
-  CardListHandDraw(world->hand);
-  if (world->grabbing_card)
-    CardDraw(world->grabbing_card);
-
-  if (world->mode == WorldMode_edit) 
-    DrawText("Editing", 5, 5, 20, WHITE);
-
-  Rectangle discard_rect = (Rectangle){
-    .height = 80,
-    .width = 80,
-    .x =  10,
-    .y = GetScreenHeight() - 90,
-  };
-
-  Rectangle deck_rect = (Rectangle){
-    .height = 80,
-    .width = 80,
-    .x =  GetScreenWidth() - 90,
-    .y = GetScreenHeight() - 90,
-  };
-
-  DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
-  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
   
-  DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
-  DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+  // UI drawing stuff
+  {
+    CardListHandDraw(world->hand);
+    if (world->grabbing_card)
+      CardDraw(world->grabbing_card);
+
+    if (world->mode == WorldMode_edit) 
+      DrawText("Editing", 5, 5, 20, WHITE);
+
+    Rectangle discard_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  10,
+      .y = GetScreenHeight() - 90,
+    };
+
+    Rectangle deck_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 90,
+    };
+
+    Rectangle end_turn_rect = (Rectangle){
+      .height = 30,
+      .width = 80,
+      .x = GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 130,
+    };
+
+    DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    
+    DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+
+    if (GuiButton(end_turn_rect, "End Turn")) {
+      world->turn_count += 1;
+    }
+
+  }
+
 }
 
 

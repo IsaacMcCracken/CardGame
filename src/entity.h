@@ -33,8 +33,10 @@ struct Entity {
 
   char name_buffer[ENTITY_NAME_SIZE];
   U8 name_len;
-  U32 health;
-  U32 health_cap;
+  U16 health;
+  U16 health_cap;
+  U16 health_temp;
+
 
   WorldCoord grid_pos;
   Vector2 visual_pos;
@@ -44,6 +46,10 @@ struct Entity {
   F32 path_ratio;
 
   EntityFlags flags;
+
+  // Game Stuff
+  U8 action_count;
+  U8 bonus_count; // bonus action count
 };
 
 typedef struct EntityList EntityList;
