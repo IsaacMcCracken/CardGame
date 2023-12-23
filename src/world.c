@@ -16,6 +16,7 @@ Vector2 Vector2FromWorldIndex(World *world, U32 index) {
   };
 }
 
+
 Vector2 Vector2FromWorldCoord(WorldCoord coord) {
   return (Vector2) {
     .x = (F32)coord.x,
@@ -23,9 +24,11 @@ Vector2 Vector2FromWorldCoord(WorldCoord coord) {
   };
 }
 
+
 WorldCoord WorldCoordFromVector2(Vector2 v) {
   return (WorldCoord){v.x, v.y};
 }
+
 
 WorldCoord WorldCoordFromIndex(World *world, U32 index) {
   return (WorldCoord){
@@ -34,17 +37,21 @@ WorldCoord WorldCoordFromIndex(World *world, U32 index) {
   };
 }
 
+
 U32 WorldIndexFromVector2(World *world, Vector2 v) {
   return (U32)v.x + (U32)v.y * world->width;
 }
+
 
 U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord) {
   return coord.x + coord.y * world->width;
 }
 
+
 bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
   return a.x == b.x && a.y == b.y;
 }
+
 
 
 World WorldInit(Arena *arena, U32 width, U32 height) {
@@ -64,13 +71,18 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
   };
 }
 
+
+
 void WorldLoad(World *world, Arena* arena, const char *filepath) {
   // TODO: implement this function
 }
 
+
 void WorldSave(World *world, const char *filepath) {
   // TODO: implement this function
 }
+
+
 
 void WorldDraw(World *world) {
   BeginMode2D(world->camera);
@@ -78,14 +90,15 @@ void WorldDraw(World *world) {
     for (U32 i = 0; i < world->width * world->height; i++) {
       Vector2 tile_pos = Vector2FromWorldIndex(world, i);
 
-      Color color;
-
       switch (world->tiles[i]) {
-        case Tile_wall: color = DARKGRAY; break;
-        default: color = DARKGREEN; break;
+        case Tile_wall: DrawRectangleV(tile_pos, (Vector2){1,1}, BLACK); break;
+        default: 
+          DrawRectangleV(tile_pos, (Vector2){1,1}, DARKGRAY);
+          DrawRectangleV(Vector2Add(tile_pos, (Vector2){0.05, 0.05}), (Vector2){0.9,0.9}, GRAY);
+          break;
       }
 
-      DrawRectangleV(tile_pos, (Vector2){1,1}, color);
+      
     }
     
 
@@ -114,18 +127,19 @@ void WorldDraw(World *world) {
       }
     }
 
-    if (world->grabbing_card) {
-      Vector2 card_world_postion = GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera);
-      Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
+    if (world->mode == WorldMode_game) {
+      if (world->grabbing_card) {
+        Vector2 card_world_postion = GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera);
+        Vector2 card_target_vector = Vector2Subtract(card_world_postion, Vector2One());
 
-      WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
-        Rectangle card_target_rect = (Rectangle){
-          .x = card_target_coord.x,
-          .y = card_target_coord.y,
-          .width = 1,
-          .height = 1,
-        };
-        DrawRectangleLinesEx(card_target_rect, 0.1, RED);
+        WorldCoord card_target_coord = WorldCoordFromVector2(card_target_vector);
+          Rectangle card_target_rect = (Rectangle){
+            .x = card_target_coord.x,
+            .y = card_target_coord.y,
+            .width = 1,
+            .height = 1,
+          };
+          DrawRectangleLinesEx(card_target_rect, 0.1, RED);
 
         DrawLineEx(
           card_world_postion, 
@@ -146,6 +160,12 @@ void WorldDraw(World *world) {
     if (world->mode == WorldMode_edit) 
       DrawText("Editing", 5, 5, 20, WHITE);
 
+    Rectangle discard_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  10,
+      .y = GetScreenHeight() - 90,
+    };
     Rectangle discard_rect = (Rectangle){
       .height = 80,
       .width = 80,
@@ -181,6 +201,10 @@ void WorldDraw(World *world) {
 
 }
 
+  if (world->mode == WorldMode_edit) {
+    
+  }
+}
 
 
 
@@ -210,9 +234,9 @@ void WorldUpdateFrame(
   if (world->mode == WorldMode_game) 
     GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
 
-  EntityUpdate(world->entities, perm_arena);
-  
+  EntityUpdate(world->entities, perm_arena); 
 }
+
 
 void WorldUpdateWorld(World *world) {
   // TODO: implement this function

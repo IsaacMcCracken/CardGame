@@ -1,6 +1,8 @@
 #include "entity.h"
 #include <string.h>
 
+
+
 void EntityListAppend(EntityList *list, Entity *entity) {
   Entity *last = list->last; 
   if (list->last) {
@@ -14,6 +16,8 @@ void EntityListAppend(EntityList *list, Entity *entity) {
     list->last = entity;
   }
 }
+
+
 
 Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
   Entity *entity = NULL;
@@ -36,6 +40,7 @@ Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
 
   return entity;
 }
+
 
 void EntityFree(EntityList *list, Entity *entity) {
   Entity *next = entity->next;
@@ -61,6 +66,8 @@ void EntityFree(EntityList *list, Entity *entity) {
   list->free_list = entity;
 }
 
+
+
 Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord) {
   Entity *entity = NULL;
   for (EachEntity(node, list->first)) {
@@ -69,6 +76,5 @@ Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord) {
       break;
     }
   }
-
   return entity;
 }

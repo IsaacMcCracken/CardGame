@@ -1,8 +1,8 @@
 #ifndef CARD_TYPES_H
 #define CARD_TYPES_H
 
-#include "card.h"
 #include "world.h"
+
 
 
 /*
@@ -22,5 +22,6 @@ struct CardData {
 
 #define MAX_CARD_ARCHETYPES 4
 const CardData card_archetypes[MAX_CARD_ARCHETYPES];
+
 
 #endif

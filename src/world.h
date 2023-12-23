@@ -6,17 +6,21 @@
 #include "entity.h"
 #include "card.h"
 
+
+
 typedef U8 Tile;
 enum {
   Tile_void,
   Tile_wall,
 };
 
+
 typedef U8 WorldMode;
 enum {
   WorldMode_game,
   WorldMode_edit,
 };
+
 
 typedef struct World World;
 struct World {
@@ -36,7 +40,6 @@ struct World {
   CardList *hand;
   CardList *discard;
 };
-
 
 
 
@@ -62,5 +65,6 @@ WorldCoord WorldCoordFromIndex(World *world, U32 Index);
 U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord);
 Vector2 Vector2FromWorldCoord(WorldCoord coord);
 bool WorldCoordEqual(WorldCoord a, WorldCoord b);
+
 
 #endif

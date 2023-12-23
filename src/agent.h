@@ -1,7 +1,12 @@
 // This is is where code for ai behaivior to go goes.
 
+#ifndef AGENT_H
+#define AGENT_H
+
 
 #include "world.h"
+
+
 
 WorldCoordList *WorldCoordListFindPath(
   World *world,
@@ -12,3 +17,4 @@ WorldCoordList *WorldCoordListFindPath(
 );
 
 void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start);
+#endif

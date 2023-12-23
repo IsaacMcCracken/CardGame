@@ -4,6 +4,8 @@
 /* Game Stuff Actions such as input and UI here */
 #include "world.h"
 
+
+
 void GamePlayUpdate(  
   World *world,
   Arena *perm_arena, 
@@ -11,10 +13,8 @@ void GamePlayUpdate(
   Arena *temp_arena
 );
 
+
 void EntityUpdate(EntityList *list, Arena *perm_arena);
-
-
-
 
 
 #endif
