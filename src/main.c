@@ -1,10 +1,9 @@
-
-
 #include <raylib.h>
 #include <raymath.h>
 #include "arena.h"
 #include "card.h"
 #include "world.h"
+#include "rayutil.h"
 
 // Ok I have this idea to combine a card game with a 
 // turn based strategy game I think the idea would be 
@@ -26,12 +25,12 @@
 // - weapons - each character can hold one weapon at a time
 
 
-
 int main() {
 
   TraceLogLevel(LOG_ALL);
-  InitWindow(1600, 900, "Card Game");
+  InitWindow(1240, 720, "Card Game");
   SetTargetFPS(60);
+  
   // This is all of our memory management 
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
   Arena *turn_arena = ArenaInit(Megabyte(100)); // This is for allocations that will only last a turn *eg. A path list
