@@ -152,7 +152,7 @@ void WorldDraw(World *world) {
   EndMode2D();
   
   // UI drawing stuff
-  {
+  if (world->mode == WorldMode_game){
     CardListHandDraw(world->hand);
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
@@ -196,7 +196,14 @@ void WorldDraw(World *world) {
 }
 
   if (world->mode == WorldMode_edit) {
-    
+    Rectangle tool_bar = (Rectangle) {
+      .height = 20,
+      .width = GetScreenWidth(),
+      .x = 0,
+      .y = 0,
+    };
+
+    GuiGroupBox(tool_bar, "Edit");
   }
 }
 
@@ -212,6 +219,9 @@ void WorldUpdateFrame(
   Vector2 mouse_pos = GetMousePosition();
   Vector2 mouse_world_pos = GetScreenToWorld2D(mouse_pos, world->camera);
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
+
+  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_TAB))
+    world->mode = !world->mode;
 
   if (world->mode == WorldMode_edit) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {

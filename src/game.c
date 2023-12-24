@@ -16,6 +16,10 @@ void CameraUpdate(World *world) {
 
   direction = Vector2Normalize(direction);
 
+  if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)) {
+    Vector2 delta = Vector2Scale(GetMouseDelta(), -1.0f/world->camera.zoom);
+    world->camera.target = Vector2Add(world->camera.target, delta);
+  }
 
   F32 speed = 3.0/world->camera.zoom;
   direction = Vector2Scale(direction, speed);

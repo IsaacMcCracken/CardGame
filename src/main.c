@@ -56,7 +56,6 @@ int main() {
       ClearBackground(BLACK);
       
       WorldDraw(&world);
-      DrawFPS(0,0);
 
     EndDrawing();
   }

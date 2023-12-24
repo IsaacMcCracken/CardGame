@@ -12,6 +12,12 @@ second is the secondary target
 */
 typedef void (*CardFn)(World *, WorldCoord*, Entity *, Entity *);
 
+typedef U16 CardIndex;
+enum {
+  CardIndex_sex = 1,
+  CardIndex_array_of_arrows = 3,
+};
+
 typedef struct CardData CardData;
 struct CardData {
   const char *name;
@@ -21,7 +27,7 @@ struct CardData {
 };
 
 #define MAX_CARD_ARCHETYPES 4
-const CardData card_archetypes[MAX_CARD_ARCHETYPES];
+extern const CardData card_archetypes[MAX_CARD_ARCHETYPES];
 
 
 #endif
