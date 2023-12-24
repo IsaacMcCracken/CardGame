@@ -55,8 +55,7 @@ void WorldUpdateFrame(
   Arena *turn_arena, 
   Arena *temp_arena
 );
-
-void WorldUpdateWorld(World *world); // used to update the state of the world
+void WorldUpdateTurn(World *world);
 
 
 // World Coordinates

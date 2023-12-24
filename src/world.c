@@ -107,6 +107,10 @@ void WorldDraw(World *world) {
       if (entity->path) 
         WorldCoordListDraw(world, entity->path, entity->path_index);
 
+      if (entity == world->grabbing_entity) {
+        
+      }
+
       Rectangle entity_rect = (Rectangle) {
         .height = 1,
         .width = 1,
@@ -188,7 +192,7 @@ void WorldDraw(World *world) {
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
 
     if (GuiButton(end_turn_rect, "End Turn")) {
-      world->turn_count += 1;
+      WorldUpdateTurn(world);
     }
 
   }
@@ -242,6 +246,6 @@ void WorldUpdateFrame(
 }
 
 
-void WorldUpdateWorld(World *world) {
+void WorldUpdateTurn(World *world) {
   // TODO: implement this function
 }
