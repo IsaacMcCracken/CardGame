@@ -102,26 +102,30 @@ void CardDraw(Card *card) {
 
 
 void CardListHandDraw(CardList *hand) {
-  Card *node = hand->first;
+
+
   const I32 count = hand->count;
-  const I32 hand_layout_width = (GetScreenWidth())/3;
-  const I32 hand_layout_x = GetScreenWidth()/6;
 
-  U32 hand_position = 0;
-  // for (EachNode(node)) {
-  while (node) {
-    CardDraw(node);
-    
-    node->screen_position = Vector2Lerp(
-      node->screen_position,
-      (Vector2){hand_layout_x + (hand_layout_width/count) * hand_position, GetScreenHeight() - 100},
-      2.0 * GetFrameTime()
-    );
+  if (count > 0) {
+    const I32 gap = GetScreenWidth()/6;
+    const I32 hand_layout_width = (gap * 4) - DefaultCardSize.x;
+    const I32 hand_layout_x = hand_layout_width/count;
 
-    hand_position++;
-    node = node->next;
+    U32 hand_position = 0;
+    Card *node = hand->first;
+    while (node) {
+      CardDraw(node);
+      
+      node->screen_position = Vector2Lerp(
+        node->screen_position,
+        (Vector2){gap + hand_position * hand_layout_x, GetScreenHeight() - 100},
+        2.0 * GetFrameTime()
+      );
+
+      hand_position++;
+      node = node->next;
+    }
   }
-  
 };
 
 

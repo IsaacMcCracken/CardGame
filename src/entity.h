@@ -41,9 +41,9 @@ struct Entity {
   U16 health_cap;
   U16 health_temp;
 
-  U8 movement_used;
-  U8 movement_cap;
-  U8 movement_temp;
+  U16 movement_left;
+  U16 movement_cap;
+  U32 movement_temp;
 
   WorldCoord grid_pos;
   Vector2 visual_pos;

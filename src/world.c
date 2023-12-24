@@ -108,32 +108,29 @@ void WorldDraw(World *world) {
         WorldCoordListDraw(world, entity->path, entity->path_index);
 
       if (entity == world->grabbing_entity) {
-        U16 movement_distance = entity->movement_cap + entity->movement_temp;
-        I32 dist_north = max(0, entity->grid_pos.y - (movement_distance));
-        I32 dist_south = min(world->height, entity->grid_pos.y + (movement_distance));
-        I32 dist_west = max(0, entity->grid_pos.x - movement_distance);
-        I32 dist_east = min(world->width, entity->grid_pos.x + movement_distance);
+
+        I32 movement_distance = entity->movement_left + entity->movement_temp;
+
+        if (world->selected_path) {
+          for (U32 i = 0; i < world->selected_path->len - 1; i++) {
+            Vector2 center = {0.5f, 0.5f};
+
+            Color path_color = WHITE;
+            Vector2 first_pos = Vector2FromWorldCoord(world->selected_path->ptr[i]);
+            Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
 
 
-        for (U32 y = dist_north; y <= dist_south; y++) {
-          for (U32 x = dist_west; y <= dist_east; y++) {
-            Vector2 pos = (Vector2){x,y};
+            Vector2 difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
 
-            Rectangle rect = (Rectangle){
-              .height = 1,
-              .width = 1,
-              .x = x,
-              .y = y,
-            };
+            if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
+              path_color = RED;
+            
+            first_pos = Vector2Add(first_pos, center);
+            second_pos = Vector2Add(second_pos, center);
 
-            F32 distance_from_entity_sqr = Vector2LengthSqr(Vector2Subtract(pos, Vector2FromWorldCoord(entity->grid_pos)));
-
-            if ((U16)distance_from_entity_sqr > movement_distance * movement_distance) {
-              DrawRectangleLinesEx(rect, 0.1, BLUE);
-            }
+            DrawLineEx(first_pos, second_pos, 0.1, path_color);
           }
         }
-        
       }
 
       Rectangle entity_rect = (Rectangle) {
