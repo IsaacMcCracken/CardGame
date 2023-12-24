@@ -108,6 +108,31 @@ void WorldDraw(World *world) {
         WorldCoordListDraw(world, entity->path, entity->path_index);
 
       if (entity == world->grabbing_entity) {
+        U16 movement_distance = entity->movement_cap + entity->movement_temp;
+        I32 dist_north = max(0, entity->grid_pos.y - (movement_distance));
+        I32 dist_south = min(world->height, entity->grid_pos.y + (movement_distance));
+        I32 dist_west = max(0, entity->grid_pos.x - movement_distance);
+        I32 dist_east = min(world->width, entity->grid_pos.x + movement_distance);
+
+
+        for (U32 y = dist_north; y <= dist_south; y++) {
+          for (U32 x = dist_west; y <= dist_east; y++) {
+            Vector2 pos = (Vector2){x,y};
+
+            Rectangle rect = (Rectangle){
+              .height = 1,
+              .width = 1,
+              .x = x,
+              .y = y,
+            };
+
+            F32 distance_from_entity_sqr = Vector2LengthSqr(Vector2Subtract(pos, Vector2FromWorldCoord(entity->grid_pos)));
+
+            if ((U16)distance_from_entity_sqr > movement_distance * movement_distance) {
+              DrawRectangleLinesEx(rect, 0.1, BLUE);
+            }
+          }
+        }
         
       }
 
@@ -153,13 +178,16 @@ void WorldDraw(World *world) {
   EndMode2D();
   
   // UI drawing stuff
+  
+
   if (world->mode == WorldMode_game){
+    DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
+
     CardListHandDraw(world->hand);
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
 
-    if (world->mode == WorldMode_edit) 
-      DrawText("Editing", 5, 5, 20, WHITE);
+
 
     Rectangle discard_rect = (Rectangle){
       .height = 80,
@@ -187,7 +215,8 @@ void WorldDraw(World *world) {
     
     DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
-
+    
+    // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
       WorldUpdateTurn(world);
     }
@@ -245,4 +274,6 @@ void WorldUpdateFrame(
 
 void WorldUpdateTurn(World *world) {
   // TODO: implement this function
+
+  world->turn_count += 1;
 }

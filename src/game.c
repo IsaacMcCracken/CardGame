@@ -195,7 +195,7 @@ void EntityUpdatePathPosition(Entity *entity) {
 
 
 void EntityUpdate(EntityList *list, Arena *perm_arena) {
-  for (EachEntity(entity, list->first)) {
+  ForEachEntity(entity, list->first) {
     // if the entity has a path we update its position
     EntityUpdatePathPosition(entity);
   }
