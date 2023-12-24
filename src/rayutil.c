@@ -1,6 +1,6 @@
 #include "rayutil.h"
-
-
+#include <stdio.h>
+#include <string.h>
 
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color) {
   if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
@@ -42,4 +42,25 @@ void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_
 
     i += codepointByteCount;   // Move text bytes counter to next codepoint
   }
+}
+
+
+U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read) {
+  FILE *fp = fopen(filepath, "rb");
+  
+  if (fp) {
+    fseek(fp, 0, SEEK_END);
+    *bytes_read = ftell(fp);
+    rewind(fp);
+
+    U8 *buffer = ArenaPushNoZero(arena, *bytes_read);
+    fread(buffer, *bytes_read, 1, fp);
+
+    fclose(fp);
+
+    return buffer;
+
+  } else TraceLog(LOG_INFO, "couldn't open file \"%s\"", filepath);
+
+  return NULL;
 }

@@ -10,13 +10,14 @@
 
 #include <basetypes.h>
 #include <raylib.h>
+#include "arena.h"
 
 #define RAYUTIL inline
 
 
 
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
-
+U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read);
 
 RAYUTIL Timer TimerStart(F64 time_in_seconds) {
   return (Timer){
