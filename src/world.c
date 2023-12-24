@@ -107,6 +107,31 @@ void WorldDraw(World *world) {
       if (entity->path) 
         WorldCoordListDraw(world, entity->path, entity->path_index);
 
+      if (entity == world->grabbing_entity) {
+        I32 movement_distance = entity->movement_left + entity->movement_temp;
+
+        if (world->selected_path) {
+          for (U32 i = 0; i < world->selected_path->len - 1; i++) {
+            Vector2 center = {0.5f, 0.5f};
+
+            Color path_color = WHITE;
+            Vector2 first_pos = Vector2FromWorldCoord(world->selected_path->ptr[i]);
+            Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
+
+
+            Vector2 difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
+
+            if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
+              path_color = RED;
+            
+            first_pos = Vector2Add(first_pos, center);
+            second_pos = Vector2Add(second_pos, center);
+
+            DrawLineEx(first_pos, second_pos, 0.1, path_color);
+          }
+        }
+      }
+
       Rectangle entity_rect = (Rectangle) {
         .height = 1,
         .width = 1,

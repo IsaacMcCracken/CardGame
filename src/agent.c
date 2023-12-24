@@ -262,7 +262,7 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
     Vector2 start = Vector2Add(Vector2FromWorldCoord(list->ptr[i]), (Vector2){0.5, 0.5});    
     Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
 
-    DrawLineEx(start, end, 0.1, BLUE);
+    DrawLineEx(start, end, 0.1, WHITE);
 
   }
 }

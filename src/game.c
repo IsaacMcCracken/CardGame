@@ -4,6 +4,7 @@
 #include "card_types.h"
 
 #include <raymath.h>
+#include <string.h>
 
 
 void CameraUpdate(World *world) {
@@ -80,6 +81,10 @@ void GamePlayUpdate(
     }
   }
 
+  if (world->grabbing_entity && !world->grabbing_entity->path) {
+    world->selected_path = WorldCoordListFindPath(world, temp_arena, world->grabbing_entity->grid_pos, mouse_coord, 0);
+  }
+
   // this is garbage will clean up later
   if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
     world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
@@ -106,8 +111,35 @@ void GamePlayUpdate(
     if (entity_clicked) {
       world->grabbing_entity = entity_clicked;
     } else if (world->grabbing_entity) {
-      Entity *e = world->grabbing_entity;
-      e->path = WorldCoordListFindPath(world, turn_arena, e->grid_pos, mouse_coord, 0);
+      Entity *entity = world->grabbing_entity;
+      if (world->selected_path) {
+        I32 movement_distance = entity->movement_left + entity->movement_temp;
+        Vector2 center = {0.5f, 0.5f};
+
+        U32 i;
+        for (i = 0; i < world->selected_path->len - 1; i++) {
+
+            Color path_color = WHITE;
+            Vector2 first_pos = Vector2FromWorldCoord(world->selected_path->ptr[i]);
+            Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
+
+
+            Vector2 difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
+
+            if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
+              break;
+          }
+
+        WorldCoordList *new_path = ArenaPushNoZero(turn_arena, sizeof(WorldCoordList));
+        new_path->len = i + 1;
+        new_path->ptr = ArenaPushNoZero(turn_arena, sizeof(WorldCoord) * new_path->len);
+
+        memcpy(new_path->ptr, world->selected_path->ptr, sizeof(WorldCoord) * new_path->len);
+
+
+        world->selected_path = NULL;
+        entity->path = new_path;
+      }
     }
   } 
   
