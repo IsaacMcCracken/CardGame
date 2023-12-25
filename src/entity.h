@@ -28,6 +28,13 @@ struct EntityFlags {
   U8 __padding__ : 6;
 };
 
+// What team the entity is on
+typedef U8 EntityFaction;
+enum {
+  EntityFaction_neutral,
+  EntityFaction_player,
+  EntityFaction_enemy,
+};
 
 typedef struct Entity Entity;
 struct Entity {
@@ -51,6 +58,8 @@ struct Entity {
   U32 path_index;
   F32 path_ratio;
 
+  EntityFaction faction;
+  EffectFlags effects;
   EntityFlags flags;
 
   // Game Stuff

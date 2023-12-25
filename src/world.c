@@ -72,7 +72,6 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
 }
 
 
-
 void WorldLoad(World *world, Arena* arena, const char *filepath) {
   // TODO: implement this function
 }
@@ -179,8 +178,7 @@ void WorldDraw(World *world) {
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
 
-    if (world->mode == WorldMode_edit) 
-      DrawText("Editing", 5, 5, 20, WHITE);
+    DrawText(TextFormat("Turn: %lu", world->turn_count), 0 ,0 , 20, WHITE);
 
     Rectangle discard_rect = (Rectangle){
       .height = 80,
@@ -254,6 +252,6 @@ void WorldUpdateFrame(
 }
 
 
-void WorldUpdateWorld(World *world) {
+void WorldUpdateTurn(World *world) {
   // TODO: implement this function
 }
