@@ -47,6 +47,15 @@ int main() {
   player->movement_cap = 10;
   player->movement_left = 10;
 
+  Entity *enemy = EntityAlloc(perm_arena, world.entities, "susan");
+  enemy->health_cap = 7;
+  enemy->health = 7;
+  enemy->movement_cap = 5;
+  enemy->movement_left = 5;
+  enemy->grid_pos = (WorldCoord){10, 10};
+  enemy->visual_pos = (Vector2){10, 10};
+  
+
   while (!WindowShouldClose()) {
     // Update 
     ArenaReset(temp_arena);

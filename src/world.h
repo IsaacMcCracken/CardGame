@@ -37,7 +37,7 @@ struct World {
   Entity *grabbing_entity;
   Card *grabbing_card;
   WorldCoordList *selected_path;
-  
+
   CardList *deck;
   CardList *hand;
   CardList *discard;

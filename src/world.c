@@ -57,20 +57,19 @@ bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
 World WorldInit(Arena *arena, U32 width, U32 height) {
   return (World) {
 
-    .width = width,
-    .height = height,
-    .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
-    .camera = (Camera2D) {
-      .zoom = 2 * width,
-    },
-    .turn_count = 0,
-    .entities = ArenaPush(arena, sizeof(EntityList)),
-    .hand = CardListInit(arena, 0),
-    .discard = CardListInit(arena, 0),
-    .deck = CardListInit(arena, 30),
-  };
+      .width = width,
+      .height = height,
+      .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
+      .camera = (Camera2D) {
+        .zoom = 2 * width,
+      },
+      .turn_count = 0,
+      .entities = ArenaPush(arena, sizeof(EntityList)),
+      .hand = CardListInit(arena, 0),
+      .discard = CardListInit(arena, 0),
+      .deck = CardListInit(arena, 30),
+    };
 }
-
 
 
 void WorldLoad(World *world, Arena* arena, const char *filepath) {
@@ -184,7 +183,7 @@ void WorldDraw(World *world) {
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
 
-
+    DrawText(TextFormat("Turn: %lu", world->turn_count), 0 ,0 , 20, WHITE);
 
     Rectangle discard_rect = (Rectangle){
       .height = 80,
@@ -271,6 +270,17 @@ void WorldUpdateFrame(
 
 void WorldUpdateTurn(World *world) {
   // TODO: implement this function
-
   world->turn_count += 1;
+  
+
+  // do enemy logic
+
+  // once all entities had their turn update their stuff
+  for (EachEntity(entity, world->entities->first)) {
+    entity->action_count = 1;
+    entity->bonus_count = 1;
+    entity->movement_left = entity->movement_cap;
+    TraceLog(LOG_INFO, "Buck: %lu", entity->movement_left);
+  }
+
 }

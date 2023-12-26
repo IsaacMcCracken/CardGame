@@ -8,12 +8,12 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
     .description = "Target one of your characters to gain another action.",
     .method = CardFnBattleInspiration,
   },
-  {
-    .name = "Sex",
-    .cost_type = CardCostType_action,
-    .description = "character is sex",
-    .method = CardFnSex,
-  },
+  // {
+  //   .name = "Sex",
+  //   .cost_type = CardCostType_action,
+  //   .description = "character is sex",
+  //   .method = CardFnSex,
+  // },
   {
     .name = "Health Potion",
     .cost_type = CardCostType_bonus_action,

@@ -19,6 +19,12 @@
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
 U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read);
 
+RAYUTIL I32 Log2(I32 x) {
+  I32 result = 0;
+  while (x >>= 1) result++;
+  return result;
+}
+
 RAYUTIL Timer TimerStart(F64 time_in_seconds) {
   return (Timer){
     .start_time = GetTime(),

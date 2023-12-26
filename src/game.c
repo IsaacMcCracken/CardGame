@@ -4,6 +4,7 @@
 #include "card_types.h"
 
 #include <raymath.h>
+#include <raygui.h>
 #include <string.h>
 
 
@@ -115,12 +116,14 @@ void GamePlayUpdate(
     if (entity_clicked) {
       world->grabbing_entity = entity_clicked;
     } else if (world->grabbing_entity) {
+      // Move Entity Stuff
       Entity *entity = world->grabbing_entity;
       if (world->selected_path) {
         I32 movement_distance = entity->movement_left + entity->movement_temp;
         Vector2 center = {0.5f, 0.5f};
 
         U32 i;
+        Vector2 difference;
         for (i = 0; i < world->selected_path->len - 1; i++) {
 
             Color path_color = WHITE;
@@ -128,7 +131,7 @@ void GamePlayUpdate(
             Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
 
 
-            Vector2 difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
+            difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
 
             if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
               break;
@@ -143,6 +146,7 @@ void GamePlayUpdate(
 
         world->selected_path = NULL;
         entity->path = new_path;
+        entity->movement_left -= (I32)Vector2Length(difference);
       }
     }
   } 
@@ -172,6 +176,8 @@ void EntityUpdatePathPosition(Entity *entity) {
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
 
+
+    // fix this i guess
     F32 delta_p = speed/60;
 
     Vector2 velocity = Vector2Scale(Vector2Normalize(delta), delta_p);
@@ -227,8 +233,58 @@ void EntityUpdatePathPosition(Entity *entity) {
 
 
 void EntityUpdate(EntityList *list, Arena *perm_arena) {
-  ForEachEntity(entity, list->first) {
-    // if the entity has a path we update its position
+  // ForEachEntity(entity, list->first) {
+  
+  Entity *entity = list->first;
+  while (entity) {
+    Entity *next = entity->next;
+
     EntityUpdatePathPosition(entity);
+
+
+    entity = next;
   }
+}
+
+
+void GameGuiDraw(World *world) {
+    DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
+
+    CardListHandDraw(world->hand);
+    if (world->grabbing_card)
+      CardDraw(world->grabbing_card);
+
+    DrawText(TextFormat("Turn: %lu", world->turn_count), 0 ,0 , 20, WHITE);
+
+    Rectangle discard_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  10,
+      .y = GetScreenHeight() - 90,
+    };
+
+    Rectangle deck_rect = (Rectangle){
+      .height = 80,
+      .width = 80,
+      .x =  GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 90,
+    };
+
+    Rectangle end_turn_rect = (Rectangle){
+      .height = 30,
+      .width = 80,
+      .x = GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 130,
+    };
+
+    DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    
+    DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    
+    // Game Intermediate Mode Gui
+    if (GuiButton(end_turn_rect, "End Turn")) {
+      WorldUpdateTurn(world);
+    }
 }

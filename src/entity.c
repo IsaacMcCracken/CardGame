@@ -29,7 +29,7 @@ Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
     memset(entity, 0, sizeof(Entity));
   } else {
     // Otherwise we just allocate new memory from a arena
-    entity = ArenaPush(arena, sizeof(entity));
+    entity = ArenaPush(arena, sizeof(Entity));
   }
   
   EntityListAppend(list, entity);
