@@ -37,7 +37,7 @@ struct World {
   Entity *grabbing_entity;
   Card *grabbing_card;
   WorldCoordList *selected_path;
-  
+
   CardList *deck;
   CardList *hand;
   CardList *discard;
@@ -59,8 +59,7 @@ void WorldUpdateFrame(
   Arena *temp_arena
 );
 
-void WorldUpdateWorld(World *world); // used to update the state of the world
-
+void WorldUpdateTurn(World *world);
 
 // World Coordinates
 WorldCoord WorldCoordFromVector2(Vector2 v) ;

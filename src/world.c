@@ -57,18 +57,18 @@ bool WorldCoordEqual(WorldCoord a, WorldCoord b) {
 World WorldInit(Arena *arena, U32 width, U32 height) {
   return (World) {
 
-    .width = width,
-    .height = height,
-    .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
-    .camera = (Camera2D) {
-      .zoom = 2 * width,
-    },
-    .turn_count = 0,
-    .entities = ArenaPush(arena, sizeof(EntityList)),
-    .hand = CardListInit(arena, 0),
-    .discard = CardListInit(arena, 0),
-    .deck = CardListInit(arena, 30),
-  };
+      .width = width,
+      .height = height,
+      .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
+      .camera = (Camera2D) {
+        .zoom = 2 * width,
+      },
+      .turn_count = 0,
+      .entities = ArenaPush(arena, sizeof(EntityList)),
+      .hand = CardListInit(arena, 0),
+      .discard = CardListInit(arena, 0),
+      .deck = CardListInit(arena, 30),
+    };
 }
 
 
@@ -208,7 +208,7 @@ void WorldDraw(World *world) {
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
 
     if (GuiButton(end_turn_rect, "End Turn")) {
-      world->turn_count += 1;
+      WorldUpdateTurn(world);
     }
 
   }
@@ -254,4 +254,17 @@ void WorldUpdateFrame(
 
 void WorldUpdateTurn(World *world) {
   // TODO: implement this function
+  world->turn_count += 1;
+  
+
+  // do enemy logic
+
+  // once all entities had their turn update their stuff
+  for (EachEntity(entity, world->entities->first)) {
+    entity->action_count = 1;
+    entity->bonus_count = 1;
+    entity->movement_left = entity->movement_cap;
+    TraceLog(LOG_INFO, "Buck: %lu", entity->movement_left);
+  }
+
 }

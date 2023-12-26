@@ -111,12 +111,14 @@ void GamePlayUpdate(
     if (entity_clicked) {
       world->grabbing_entity = entity_clicked;
     } else if (world->grabbing_entity) {
+      // Move Entity Stuff
       Entity *entity = world->grabbing_entity;
       if (world->selected_path) {
         I32 movement_distance = entity->movement_left + entity->movement_temp;
         Vector2 center = {0.5f, 0.5f};
 
         U32 i;
+        Vector2 difference;
         for (i = 0; i < world->selected_path->len - 1; i++) {
 
             Color path_color = WHITE;
@@ -124,7 +126,7 @@ void GamePlayUpdate(
             Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
 
 
-            Vector2 difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
+            difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
 
             if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
               break;
@@ -139,6 +141,7 @@ void GamePlayUpdate(
 
         world->selected_path = NULL;
         entity->path = new_path;
+        entity->movement_left -= (I32)Vector2Length(difference);
       }
     }
   } 
@@ -168,6 +171,8 @@ void EntityUpdatePathPosition(Entity *entity) {
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
 
+
+    // fix this i guess
     F32 delta_p = speed/60;
 
     Vector2 velocity = Vector2Scale(Vector2Normalize(delta), delta_p);
