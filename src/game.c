@@ -146,7 +146,10 @@ void GamePlayUpdate(
 
         world->selected_path = NULL;
         entity->path = new_path;
-        entity->movement_left -= (I32)Vector2Length(difference);
+        if ((I32)Vector2Length(difference) >= entity->movement_left) {
+          entity->movement_left = 0;
+        }
+        else entity->movement_left -= (I32)Vector2Length(difference);
       }
     }
   } 
