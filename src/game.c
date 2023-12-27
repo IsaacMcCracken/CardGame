@@ -150,10 +150,7 @@ void GamePlayUpdate(
 
         world->selected_path = NULL;
         entity->path = new_path;
-        if ((I32)Vector2Length(difference) >= entity->movement_left) {
-          entity->movement_left = 0;
-        }
-        else entity->movement_left -= (I32)Vector2Length(difference);
+        entity->movement_left -= (I32)Vector2Length(difference);
       }
     }
   } 
@@ -182,10 +179,6 @@ void EntityUpdatePathPosition(Entity *entity) {
     
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
-    
-    // adjust direction entity is facing
-    if (delta.x < 0) entity->h_flip = -1;
-    else entity->h_flip = 1;
 
 
     // fix this i guess

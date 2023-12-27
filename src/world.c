@@ -5,7 +5,8 @@
 #include "game.h"
 #include <raymath.h>
 #include <raygui.h>
-#include "asset.h"
+
+#include <stdio.h> // Please remove this
 
 // Coordinate Type Conversion Functions 
 Vector2 Vector2FromWorldIndex(World *world, U32 index) {
@@ -67,8 +68,6 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
       .hand = CardListInit(arena, 0),
       .discard = CardListInit(arena, 0),
       .deck = CardListInit(arena, 30),
-
-      .textures = ArenaPush(arena, sizeof(Texture) * MAX_TEXTURES)
     };
 }
 
@@ -143,14 +142,8 @@ void WorldDraw(World *world) {
       DrawTextEx(GetFontDefault(), entity->name_buffer, Vector2Subtract(entity->visual_pos, (Vector2){0,0.2}), 0.2, 0.1, WHITE);
 
       DrawTextEx(GetFontDefault(), TextFormat("health: %lu", entity->health), Vector2Add(entity->visual_pos, (Vector2){0, 1}), 0.4, 0.1, WHITE); // show health
-      
-      
-      // draw textures
-      Texture texture = world->textures[entity->texture];
-      Rectangle texture_source_rect = {(texture.width/6) * entity->animation_state, 0, (texture.width/6) * entity->h_flip, texture.height};
-      DrawTexturePro(texture, texture_source_rect, entity_rect, Vector2Zero(), 0, WHITE);
-      
 
+      DrawRectangleRec(entity_rect, SKYBLUE);
       if (entity == world->grabbing_entity) {
         DrawRectangleLinesEx(entity_rect, 0.05, GREEN );
       }

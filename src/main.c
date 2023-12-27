@@ -4,7 +4,6 @@
 #include "card.h"
 #include "world.h"
 #include "rayutil.h"
-#include "asset.h"
 
 // Ok I have this idea to combine a card game with a 
 // turn based strategy game I think the idea would be 
@@ -40,8 +39,6 @@ int main() {
 
   World world = WorldInit(perm_arena, 20, 20);
 
-  AssetLoadTexture(&world);
-
   world.tiles[57] = Tile_wall;
 
   world.tiles[57] = Tile_wall;
@@ -51,8 +48,6 @@ int main() {
   player->health = 20;
   player->movement_cap = 10;
   player->movement_left = 10;
-  player->h_flip = 1;
-  player->animation_state = AnimationState_running;
 
   Entity *enemy = EntityAlloc(perm_arena, world.entities, "susan");
   enemy->health_cap = 7;
@@ -61,8 +56,6 @@ int main() {
   enemy->movement_left = 5;
   enemy->grid_pos = (WorldCoord){10, 10};
   enemy->visual_pos = (Vector2){10, 10};
-  enemy->h_flip = 1;
-  enemy->animation_state = AnimationState_attacking;
   
 
   while (!WindowShouldClose()) {
