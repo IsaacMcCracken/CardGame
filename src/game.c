@@ -175,6 +175,10 @@ void EntityUpdatePathPosition(Entity *entity) {
     
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
+    
+    // adjust direction entity is facing
+    if (delta.x < 0) entity->h_flip = -1;
+    else entity->h_flip = 1;
 
 
     // fix this i guess
