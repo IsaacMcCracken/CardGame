@@ -66,11 +66,6 @@ struct Entity {
   // Game Stuff
   U8 action_count;
   U8 bonus_count; // bonus action count
-
-  // entity rendering
-  U8 texture; // index into texture buffer
-  F32 h_flip;
-  U8 animation_state;
 };
 
 
