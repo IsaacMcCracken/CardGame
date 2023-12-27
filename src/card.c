@@ -19,6 +19,10 @@ void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
     if (to->last) {
 
       // stitch em togther
+
+      // there is house in new orleans they call it the rising 
+
+      
       to->last->next = from->first;
       from->first->prev = to->last;
       // move the last pointer

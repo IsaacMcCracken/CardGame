@@ -18,12 +18,17 @@ void CameraUpdate(World *world) {
 
   direction = Vector2Normalize(direction);
 
+
   if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)) {
     Vector2 delta = Vector2Scale(GetMouseDelta(), -1.0f/world->camera.zoom);
     world->camera.target = Vector2Add(world->camera.target, delta);
   }
 
   F32 speed = 3.0/world->camera.zoom;
+
+  if (IsKeyDown(KEY_LEFT_SHIFT)){
+    speed *= 2; 
+  }
   direction = Vector2Scale(direction, speed);
 
 
@@ -57,7 +62,6 @@ void GamePlayUpdate(
   WorldCoord mouse_coord = WorldCoordFromVector2(mouse_world_position);
 
   // Navigation and Zoom
-  CameraUpdate(world);
 
 
   // Card Grabbing and UI Stuff

@@ -41,6 +41,8 @@ int main() {
 
   world.tiles[57] = Tile_wall;
 
+  world.tiles[57] = Tile_wall;
+
   Entity *player = EntityAlloc(perm_arena, world.entities, "kaiden");
   player->health_cap = 50;
   player->health = 20;
@@ -67,6 +69,7 @@ int main() {
       ClearBackground(BLACK);
       
       WorldDraw(&world);
+      
 
     EndDrawing();
   }

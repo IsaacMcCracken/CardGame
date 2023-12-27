@@ -246,6 +246,8 @@ void WorldUpdateFrame(
   Vector2 mouse_world_pos = GetScreenToWorld2D(mouse_pos, world->camera);
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
 
+  CameraUpdate(world);
+
   if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_TAB))
     world->mode = !world->mode;
 
