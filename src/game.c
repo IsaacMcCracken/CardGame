@@ -56,8 +56,7 @@ void GamePlayUpdate(
   Vector2 mouse_world_position = GetScreenToWorld2D(mouse_screen_position, world->camera);
   WorldCoord mouse_coord = WorldCoordFromVector2(mouse_world_position);
 
-  // Navigation and Zoom
-  CameraUpdate(world);
+
 
 
   // Card Grabbing and UI Stuff

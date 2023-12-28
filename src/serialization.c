@@ -45,7 +45,12 @@ void SerializeWorld(Arena *temp_arena, World *world, const char *filename) {
   file_header->entity_count = SerializeEntities(temp_arena, world->entities);
   file_size += file_header->entity_count * sizeof(SerializeEnity);
 
-  SaveFileData(filename, file_header, file_size);
+
+  bool file_saved = SaveFileData(filename, file_header, file_size);
+
+  if (!file_saved) {
+    TraceLog(LOG_ERROR, "Could not save %s.", filename);
+  }
 
   TempArenaDeinit(pop);
 }

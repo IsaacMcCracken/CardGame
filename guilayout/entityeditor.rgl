@@ -1,0 +1,17 @@
+#
+# rgl layout text file (v4.0) - raygui layout file generated using rGuiLayout
+#
+# Number of controls:     6
+#
+# Ref. window:    r <x> <y> <width> <height>
+# Anchor info:    a <id> <name> <posx> <posy> <enabled>
+# Control info:   c <id> <type> <name> <rectangle> <anchor_id> <text>
+#
+r 0 40 -1 -1
+a 001 anchor01 0 0 1
+c 000 0 EntityEditorBox 0 0 280 584 0 Entity Editor
+c 001 4 LabelEntityName 8 32 32 24 1 Name
+c 002 12 EntityNameTextBox 56 32 216 24 0 Entity Name
+c 003 15 HealthSpinner 56 64 216 24 0 Health    
+c 004 15 MovementSpinner 56 96 216 24 0 Movement
+c 005 5 EntityEditorSaveButton 232 552 40 24 0 Save

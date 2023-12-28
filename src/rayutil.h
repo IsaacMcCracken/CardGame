@@ -14,8 +14,6 @@
 
 #define RAYUTIL inline
 
-
-
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
 U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read);
 
@@ -31,7 +29,6 @@ RAYUTIL Timer TimerStart(F64 time_in_seconds) {
     .end_time = GetTime() + time_in_seconds,
   };
 }
-
 
 RAYUTIL bool TimerIsDone(Timer timer) {
   return timer.end_time >= GetTime();
