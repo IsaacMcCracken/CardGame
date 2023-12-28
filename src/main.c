@@ -6,6 +6,9 @@
 #include "rayutil.h"
 #include "asset.h"
 
+// temporary
+#include "serialization.h"
+
 // Ok I have this idea to combine a card game with a 
 // turn based strategy game I think the idea would be 
 // kinda interesting
@@ -64,6 +67,8 @@ int main() {
   enemy->h_flip = 1;
   enemy->animation_state = AnimationState_attacking;
   
+  SerializeWorld(temp_arena, &world, "test.world");
+  LoadWorld(temp_arena, &world, "test.world");
 
   while (!WindowShouldClose()) {
     // Update 
