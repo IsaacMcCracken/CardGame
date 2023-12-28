@@ -30,6 +30,8 @@ int main() {
   TraceLogLevel(LOG_ALL);
   InitWindow(1240, 720, "Card Game");
   SetTargetFPS(60);
+
+  TraceLog(LOG_INFO, "size of effect flags: %d", sizeof(EffectFlags));
   
   // This is all of our memory management 
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
