@@ -7,6 +7,13 @@
 #include "card.h"
 
 
+typedef U8 AnimationStates;
+enum {
+  AnimationState_standing,
+  AnimationState_attacking,
+  AnimationState_running,
+};
+
 
 typedef U8 Tile;
 enum {
@@ -41,6 +48,8 @@ struct World {
   CardList *deck;
   CardList *hand;
   CardList *discard;
+
+  Texture *textures;
 
 };
 
