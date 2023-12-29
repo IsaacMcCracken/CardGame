@@ -23,10 +23,12 @@ struct EffectFlags {
 
 typedef struct EntityFlags EntityFlags;
 struct EntityFlags {
+  U8 is_playable: 1;
+  U8 is_enemyable: 1;
   U8 is_flamable: 1;
   U8 is_freezable: 1;
   U8 is_wetable: 1; // is it able to get wet
-  U8 padding : 6;
+  U8 padding : 3;
 };
 
 // What team the entity is on

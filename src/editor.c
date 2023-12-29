@@ -8,31 +8,41 @@ GuiEntityEditorState entity_editor_state;
 Entity *editing_entity = NULL;
 
 void EntityEditorUpdateFrame(World *world) {
-  if (IsKeyPressed(KEY_E) && world->grabbing_entity && !entity_editor_state.EntityEditorBoxActive) {
+  if (IsKeyPressed(KEY_E) && world->grabbing_entity && !entity_editor_state.EntityEditorWindowBoxActive) {
     entity_editor_state = InitGuiEntityEditor();
-    TraceLog(LOG_INFO, "bool: %d", entity_editor_state.EntityEditorBoxActive);
+    TraceLog(LOG_INFO, "bool: %d", entity_editor_state.EntityEditorWindowBoxActive);
     // set screen position;
+    entity_editor_state.anchor = (Vector2){GetScreenWidth() - (272 + 10), 10};
 
-    for (U32 i = 0; i < sizeof(entity_editor_state.layoutRecs)/sizeof(Rectangle); i++) {
-      entity_editor_state.layoutRecs[i].x = GetScreenWidth() - (entity_editor_state.layoutRecs[i].width + 10);
-      entity_editor_state.layoutRecs[i].y += 10;
 
-    }
-    
-
-    entity_editor_state.layoutRecs[0] = (Rectangle){ GetScreenWidth() - (280 + 10), 10, 280, 584 };
     // Get Variables in there
     editing_entity = world->grabbing_entity;
     entity_editor_state.HealthSpinnerValue = editing_entity->health_cap;
     entity_editor_state.MovementSpinnerValue = editing_entity->movement_cap;
-    strcpy(entity_editor_state.EntityNameTextBoxText, editing_entity->name_buffer);
+    strcpy(entity_editor_state.NameTextBoxText, editing_entity->name_buffer);
+    entity_editor_state.EntityFactionToggleGroupActive = editing_entity->faction;
+    // Flags
+    entity_editor_state.EnemyableCheckBoxExChecked  = editing_entity->flags.is_enemyable;
+    entity_editor_state.PlayableCheckBoxExChecked   = editing_entity->flags.is_playable;
+    entity_editor_state.FlamableCheckBoxExChecked   = editing_entity->flags.is_flamable;
+    entity_editor_state.FreezableCheckBoxExChecked  = editing_entity->flags.is_freezable;
+    entity_editor_state.WetableCheckBoxExChecked    = editing_entity->flags.is_wetable;
   } 
 }
 
-static void EntityEditorSaveButton() {
+static void EntitySaveButton() {
   editing_entity->health_cap = entity_editor_state.HealthSpinnerValue;
   editing_entity->movement_cap = entity_editor_state.MovementSpinnerValue;
-  strcpy(editing_entity->name_buffer, entity_editor_state.EntityNameTextBoxText);
+  strcpy(editing_entity->name_buffer, entity_editor_state.NameTextBoxText);
+  editing_entity->faction = entity_editor_state.EntityFactionToggleGroupActive;
+  editing_entity->faction = entity_editor_state.EntityFactionToggleGroupActive;
+  // Flags
+  editing_entity->flags.is_enemyable  = entity_editor_state.EnemyableCheckBoxExChecked;
+  editing_entity->flags.is_playable   = entity_editor_state.PlayableCheckBoxExChecked;
+  editing_entity->flags.is_flamable   = entity_editor_state.FlamableCheckBoxExChecked;
+  editing_entity->flags.is_freezable  = entity_editor_state.FreezableCheckBoxExChecked;
+  editing_entity->flags.is_wetable    = entity_editor_state.WetableCheckBoxExChecked;
+
 }
 
 void EditorUpdateFrame(
@@ -46,6 +56,11 @@ void EditorUpdateFrame(
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
   
   EntityEditorUpdateFrame(world);
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    Entity *entity_selected = EntityFindByWorldCoord(world->entities, mouse_world_coord);
+    if (entity_selected)
+      world->grabbing_entity = entity_selected;
+  }
   if (mouse_world_pos.x >= 0 && mouse_world_pos.y >= 0 && mouse_world_pos.x < world->width && mouse_world_pos.y < world->height) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
@@ -60,6 +75,8 @@ void EditorUpdateFrame(
 }
 
 void EditorDraw(void) {
-  DrawText("Editing", 0, 0, 20, WHITE);
+
+  // DrawText("Editing", 0, 0, 20, WHITE);
+  GuiDrawIcon(ICON_FILE_SAVE_CLASSIC, 5, 5, 3, WHITE);
   GuiEntityEditor(&entity_editor_state);
 }
