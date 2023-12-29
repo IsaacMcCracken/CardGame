@@ -41,7 +41,7 @@ struct World {
   
   // player stuff
   U32 turn_count;
-  Entity *grabbing_entity;
+  Entity *selected_entity;
   Card *grabbing_card;
   WorldCoordList *selected_path;
 
