@@ -1,6 +1,8 @@
 # only keep build.sh from build directory (sorry if this is cluttering things)
 build/*
 !build/build.sh
+out/*
+shell.bat
 
 # system files
 .DS_Store
