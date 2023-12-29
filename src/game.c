@@ -1,8 +1,6 @@
 #include "game.h"
 #include "agent.h"
-#include "util.h"
 #include "card_types.h"
-
 #include <raymath.h>
 #include <raygui.h>
 #include <string.h>

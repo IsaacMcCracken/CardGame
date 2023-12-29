@@ -14,6 +14,11 @@
 
 #define RAYUTIL inline
 
+// Useful Macros
+#define Max(a, b) (a > b)? a : b
+#define Min(a, b) (a < b)? a : b
+
+
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
 U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read);
 
