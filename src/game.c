@@ -98,10 +98,8 @@ void GamePlayUpdate(
     if (target)  {
       CardData card = card_archetypes[world->grabbing_card->data];
       CardListAppend(world->discard, world->grabbing_card);
-      if (card.method) {
-        TraceLog(LOG_INFO, "This card has a method");
-        card.method(world, &target_coord, world->grabbing_entity, target);
-      } else TraceLog(LOG_INFO, "This card does not have a method");
+
+      PlayCard(world, target);
 
     } else {
       CardListAppend(world->hand, world->grabbing_card);
