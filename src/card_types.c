@@ -35,12 +35,11 @@ void PlayCard(World *world, Entity *target) {
       world->selected_entity->health = world->selected_entity->health_cap;
   }
   if (card_data.flags & CardFlags_damage_self) {
-    if (world->selected_entity->health >= card_data.damage_self_amount)
+    if (world->selected_entity->health > card_data.damage_self_amount)
       world->selected_entity->health -= card_data.damage_self_amount;
     else world->selected_entity->health = 0;
   }
   if (card_data.flags & CardFlags_heal_target) {
-    if (target->health > target->health_cap)
     target->health += card_data.heal_target_amount;
     if (target->health > target->health_cap)
       target->health = target->health_cap;
