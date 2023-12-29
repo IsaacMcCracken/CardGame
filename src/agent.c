@@ -23,6 +23,12 @@ struct AStarList {
   U64 count;
 };
 
+typedef struct AgentMove AgentMove;
+struct AgentMove {
+  WorldCoord coord;
+  I32 cost;
+};
+
 
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   // dont be scared this is just the absolute distance
@@ -250,10 +256,10 @@ WorldCoordList *WorldCoordListFindPath(
     }
   }
 
-  TraceLog(LOG_INFO, "Open List Count: %lu, Closed List Count: %lu, Iter: %lu", open_list->count, closed_list->count, iter);
-  TraceLog(LOG_DEBUG, "Seriously what the fuck!");
   return NULL;
 }
+
+
 
 
 void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
@@ -265,4 +271,23 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
     DrawLineEx(start, end, 0.1, WHITE);
 
   }
+}
+
+void AgentTurn(Arena *turn_arena, World *world, Entity *agent) {
+  EntityFaction opposing_faction = (agent->faction == EntityFaction_player)? EntityFaction_enemy : EntityFaction_player;
+  Entity *opponenent = NULL;
+  F32 opponenent_distance_sqr = 0;
+
+  for (EachEntity(entity, world->entities->first)) {
+    if (entity->faction == opposing_faction) {
+      if (opponenent) {
+        F32 distance_sqr = Vector2DistanceSqr(Vector2FromWorldCoord(entity->grid_pos), Vector2FromWorldCoord(agent->grid_pos));
+        if (distance_sqr < opponenent_distance_sqr)
+          opponenent = entity;
+      } else opponenent = entity; 
+    }
+  }
+
+  agent->path = WorldCoordListFindPath(world,)
+
 }

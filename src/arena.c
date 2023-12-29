@@ -54,10 +54,12 @@ TempArena TempArenaInit(Arena *backing_arena) {
   return (TempArena){
     .arena = backing_arena,
     .pos = backing_arena->pos,
+    .align = backing_arena->align,
   };
 }
 
 
 void TempArenaDeinit(TempArena temp_arena) {
   temp_arena.arena->pos = temp_arena.pos;
+  temp_arena.arena->align = temp_arena.align;
 }
