@@ -52,7 +52,6 @@ struct Entity {
 
   U16 movement_left;
   U16 movement_cap;
-  U32 movement_temp;
 
   WorldCoord grid_pos;
   Vector2 visual_pos;
@@ -65,11 +64,9 @@ struct Entity {
   EffectFlags effects;
   EntityFlags flags;
 
-  // Game Stuff
   U8 action_count;
-  U8 bonus_count; // bonus action count
+  U8 action_cap;
 
-  // entity rendering
   U8 texture; // index into texture buffer
   F32 h_flip;
   U8 animation_state;
