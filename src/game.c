@@ -116,7 +116,7 @@ void GamePlayUpdate(
       // Move Entity Stuff
       Entity *entity = world->grabbing_entity;
       if (world->selected_path) {
-        I32 movement_distance = entity->movement_left + entity->movement_temp;
+        I32 movement_distance = entity->movement_left;
         Vector2 center = {0.5f, 0.5f};
 
         U32 i;
