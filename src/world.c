@@ -111,7 +111,7 @@ void WorldDraw(World *world) {
 
       if (entity == world->grabbing_entity) {
 
-        I32 movement_distance = entity->movement_left + entity->movement_temp;
+        I32 movement_distance = entity->movement_left;
 
         if (world->selected_path) {
           for (U32 i = 0; i < world->selected_path->len - 1; i++) {
@@ -262,5 +262,9 @@ void WorldUpdateFrame(
 
 
 void WorldUpdateTurn(World *world) {
-  // TODO: implement this function
+  world->turn_count += 1;
+  
+  for (EachEntity(entity, world->entities->first)) {
+    entity->movement_left = entity->movement_cap;
+  }
 }
