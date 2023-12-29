@@ -46,15 +46,17 @@ void EditorUpdateFrame(
   WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
   
   EntityEditorUpdateFrame(world);
-  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-      world->tiles[index] = Tile_wall;
-  }
-
-  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-      const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-      world->tiles[index] = Tile_void;
+  if (mouse_world_pos.x >= 0 && mouse_world_pos.y >= 0 && mouse_world_pos.x < world->width && mouse_world_pos.y < world->height) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+        world->tiles[index] = Tile_wall;
     }
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+        const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+        world->tiles[index] = Tile_void;
+      }
+  }
 }
 
 void EditorDraw(void) {
