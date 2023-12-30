@@ -2,7 +2,9 @@
 
 #include "world.h"
 #include "agent.h"
+#include "asset.h"
 #include "game.h"
+#include "editor.h"
 #include <raymath.h>
 #include <raygui.h>
 
@@ -68,6 +70,7 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
       .hand = CardListInit(arena, 0),
       .discard = CardListInit(arena, 0),
       .deck = CardListInit(arena, 30),
+      .textures = ArenaPush(arena, sizeof(Texture) * MAX_TEXTURES)
     };
 }
 
@@ -108,7 +111,7 @@ void WorldDraw(World *world) {
 
       if (entity == world->grabbing_entity) {
 
-        I32 movement_distance = entity->movement_left + entity->movement_temp;
+        I32 movement_distance = entity->movement_left;
 
         if (world->selected_path) {
           for (U32 i = 0; i < world->selected_path->len - 1; i++) {
@@ -143,7 +146,12 @@ void WorldDraw(World *world) {
 
       DrawTextEx(GetFontDefault(), TextFormat("health: %lu", entity->health), Vector2Add(entity->visual_pos, (Vector2){0, 1}), 0.4, 0.1, WHITE); // show health
 
-      DrawRectangleRec(entity_rect, SKYBLUE);
+      // draw textures
+      Texture texture = world->textures[entity->texture];
+      Rectangle texture_source_rect = {(texture.width/6) * entity->animation_state, 0, (texture.width/6) * entity->h_flip, texture.height};
+      DrawTexturePro(texture, texture_source_rect, entity_rect, Vector2Zero(), 0, WHITE);
+      
+
       if (entity == world->grabbing_entity) {
         DrawRectangleLinesEx(entity_rect, 0.05, GREEN );
       }
@@ -222,14 +230,7 @@ void WorldDraw(World *world) {
 }
 
   if (world->mode == WorldMode_edit) {
-    Rectangle tool_bar = (Rectangle) {
-      .height = 20,
-      .width = GetScreenWidth(),
-      .x = 0,
-      .y = 0,
-    };
-
-    GuiGroupBox(tool_bar, "Edit");
+    EditorDraw();
   }
 }
 
@@ -242,26 +243,18 @@ void WorldUpdateFrame(
   Arena *temp_arena
 ) {
   // TODO: implement this function
-  Vector2 mouse_pos = GetMousePosition();
-  Vector2 mouse_world_pos = GetScreenToWorld2D(mouse_pos, world->camera);
-  WorldCoord mouse_world_coord = WorldCoordFromVector2(mouse_world_pos);
+
+
+  CameraUpdate(world);
 
   CameraUpdate(world);
 
   if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_TAB))
     world->mode = !world->mode;
 
-  if (world->mode == WorldMode_edit) {
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-      world->tiles[index] = Tile_wall;
-    }
-
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-      const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-      world->tiles[index] = Tile_void;
-    }
-  }
+  if (world->mode == WorldMode_edit)
+    EditorUpdateFrame(world, perm_arena, turn_arena, temp_arena);
+    
 
   if (world->mode == WorldMode_game) 
     GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
@@ -271,18 +264,9 @@ void WorldUpdateFrame(
 
 
 void WorldUpdateTurn(World *world) {
-  // TODO: implement this function
   world->turn_count += 1;
   
-
-  // do enemy logic
-
-  // once all entities had their turn update their stuff
   for (EachEntity(entity, world->entities->first)) {
-    entity->action_count = 1;
-    entity->bonus_count = 1;
     entity->movement_left = entity->movement_cap;
-    TraceLog(LOG_INFO, "Buck: %lu", entity->movement_left);
   }
-
 }

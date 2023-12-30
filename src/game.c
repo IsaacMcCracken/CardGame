@@ -1,8 +1,6 @@
 #include "game.h"
 #include "agent.h"
-#include "util.h"
 #include "card_types.h"
-
 #include <raymath.h>
 #include <raygui.h>
 #include <string.h>
@@ -62,6 +60,7 @@ void GamePlayUpdate(
   WorldCoord mouse_coord = WorldCoordFromVector2(mouse_world_position);
 
   // Navigation and Zoom
+  CameraUpdate(world);
 
 
   // Card Grabbing and UI Stuff
@@ -105,10 +104,8 @@ void GamePlayUpdate(
     if (target)  {
       CardData card = card_archetypes[world->grabbing_card->data];
       CardListAppend(world->discard, world->grabbing_card);
-      if (card.method) {
-        TraceLog(LOG_INFO, "This card has a method");
-        card.method(world, &target_coord, world->grabbing_entity, target);
-      } else TraceLog(LOG_INFO, "This card does not have a method");
+
+      PlayCard(world, target);
 
     } else {
       CardListAppend(world->hand, world->grabbing_card);
@@ -123,7 +120,7 @@ void GamePlayUpdate(
       // Move Entity Stuff
       Entity *entity = world->grabbing_entity;
       if (world->selected_path) {
-        I32 movement_distance = entity->movement_left + entity->movement_temp;
+        I32 movement_distance = entity->movement_left;
         Vector2 center = {0.5f, 0.5f};
 
         U32 i;
@@ -150,7 +147,10 @@ void GamePlayUpdate(
 
         world->selected_path = NULL;
         entity->path = new_path;
-        entity->movement_left -= (I32)Vector2Length(difference);
+        if ((I32)Vector2Length(difference) >= entity->movement_left) {
+          entity->movement_left = 0;
+        }
+        else entity->movement_left -= (I32)Vector2Length(difference);
       }
     }
   } 
@@ -179,6 +179,10 @@ void EntityUpdatePathPosition(Entity *entity) {
     
 
     Vector2 delta = Vector2Subtract(vector_current_target, entity->visual_pos);
+    
+    // adjust direction entity is facing
+    if (delta.x < 0) entity->h_flip = -1;
+    else entity->h_flip = 1;
 
 
     // fix this i guess

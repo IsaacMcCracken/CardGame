@@ -1,0 +1,26 @@
+#
+# rgl layout text file (v4.0) - raygui layout file generated using rGuiLayout
+#
+# Number of controls:     15
+#
+# Ref. window:    r <x> <y> <width> <height>
+# Anchor info:    a <id> <name> <posx> <posy> <enabled>
+# Control info:   c <id> <type> <name> <rectangle> <anchor_id> <text>
+#
+r 0 40 -1 -1
+a 001 anchor 0 0 1
+c 000 0 EntityEditorWindowBox 0 0 272 480 1 Entity Editor
+c 001 4 NameLabel 8 32 32 24 1 Name
+c 002 12 NameTextBox 40 32 224 24 1 Name
+c 003 15 HealthSpinner 104 64 160 24 1 Health Capacity    
+c 004 15 MovementSpinner 104 96 160 24 1 Movement Capacity
+c 005 5 EntitySaveButton 144 448 120 24 1 Save
+c 006 9 EntityFactionToggleGroup 16 144 80 24 1 Neutral;Player;Enemy
+c 007 4 EntityFlagLabel 96 184 64 16 1 Entity Flags
+c 008 7 PlayableCheckBoxEx 8 200 24 24 1 Playable
+c 009 4 FactionLabel 112 128 40 16 1 Faction
+c 010 7 EnemyableCheckBoxEx 96 200 24 24 1 Enemyable
+c 011 7 FlamableCheckBoxEx 184 200 24 24 1 Flamable
+c 012 2 Line012 8 168 256 16 1 
+c 013 7 FreezableCheckBoxEx 8 232 24 24 1 Freezeable
+c 014 7 WetableCheckBoxEx 96 232 24 24 1 Wetable

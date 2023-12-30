@@ -23,10 +23,12 @@ struct EffectFlags {
 
 typedef struct EntityFlags EntityFlags;
 struct EntityFlags {
+  U8 is_playable: 1;
+  U8 is_enemyable: 1;
   U8 is_flamable: 1;
   U8 is_freezable: 1;
   U8 is_wetable: 1; // is it able to get wet
-  U8 padding : 6;
+  U8 padding : 3;
 };
 
 // What team the entity is on
@@ -50,7 +52,6 @@ struct Entity {
 
   U16 movement_left;
   U16 movement_cap;
-  U32 movement_temp;
 
   WorldCoord grid_pos;
   Vector2 visual_pos;
@@ -63,9 +64,12 @@ struct Entity {
   EffectFlags effects;
   EntityFlags flags;
 
-  // Game Stuff
   U8 action_count;
-  U8 bonus_count; // bonus action count
+  U8 action_cap;
+
+  U8 texture; // index into texture buffer
+  F32 h_flip;
+  U8 animation_state;
 };
 
 

@@ -10,16 +10,6 @@
 #define DefaultCardSize (Vector2){200, 300}
 
 
-
-typedef U8 CardCostType;
-enum {
-  CardCostType_no_cost = 0,
-  CardCostType_action,
-  CardCostType_bonus_action,
-  CardCostType_full_action,
-};
-
-
 typedef struct Card Card;
 struct Card {
   Card *next;

@@ -14,6 +14,9 @@
 
 #define RAYUTIL inline
 
+// Useful Macros
+#define Max(a, b) (a > b)? a : b
+#define Min(a, b) (a < b)? a : b
 
 
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color);
@@ -31,7 +34,6 @@ RAYUTIL Timer TimerStart(F64 time_in_seconds) {
     .end_time = GetTime() + time_in_seconds,
   };
 }
-
 
 RAYUTIL bool TimerIsDone(Timer timer) {
   return timer.end_time >= GetTime();
