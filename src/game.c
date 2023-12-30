@@ -11,10 +11,10 @@
 void CameraUpdate(World *world) {
   Vector2 direction = Vector2Zero();
 
-  if (IsKeyDown(KEY_A)) direction.x -= 1;
-  if (IsKeyDown(KEY_D)) direction.x += 1;
-  if (IsKeyDown(KEY_W)) direction.y -= 1;
-  if (IsKeyDown(KEY_S)) direction.y += 1;
+  if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))  direction.x -= 1;
+  if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) direction.x += 1;
+  if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP))    direction.y -= 1;
+  if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))  direction.y += 1;
 
   direction = Vector2Normalize(direction);
 
@@ -24,7 +24,7 @@ void CameraUpdate(World *world) {
     world->camera.target = Vector2Add(world->camera.target, delta);
   }
 
-  F32 speed = 3.0/world->camera.zoom;
+  F32 speed = 8.0/world->camera.zoom;
 
   if (IsKeyDown(KEY_LEFT_SHIFT)){
     speed *= 2; 
