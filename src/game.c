@@ -255,7 +255,7 @@ void EntityUpdate(EntityList *list, Arena *perm_arena) {
 }
 
 
-void GameGuiDraw(World *world) {
+void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
 
     CardListHandDraw(world->hand);
@@ -293,6 +293,6 @@ void GameGuiDraw(World *world) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(world);
+      WorldUpdateTurn(world, turn_arena);
     }
 }

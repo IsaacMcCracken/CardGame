@@ -86,7 +86,7 @@ void WorldSave(World *world, const char *filepath) {
 
 
 
-void WorldDraw(World *world) {
+void WorldDraw(World *world, Arena *turn_arena) {
   BeginMode2D(world->camera);
   {
     for (U32 i = 0; i < world->width * world->height; i++) {
@@ -150,7 +150,7 @@ void WorldDraw(World *world) {
       Texture texture = world->textures[entity->texture];
       Rectangle texture_source_rect = {(texture.width/6) * entity->animation_state, 0, (texture.width/6) * entity->h_flip, texture.height};
       DrawTexturePro(texture, texture_source_rect, entity_rect, Vector2Zero(), 0, WHITE);
-      
+
 
       if (entity == world->grabbing_entity) {
         DrawRectangleLinesEx(entity_rect, 0.05, GREEN );
@@ -222,7 +222,7 @@ void WorldDraw(World *world) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(world);
+      WorldUpdateTurn(world, turn_arena);
     }
 
   }
@@ -243,11 +243,12 @@ void WorldUpdateFrame(
   Arena *temp_arena
 ) {
   // TODO: implement this function
+  
 
-
-  CameraUpdate(world);
-
-  CameraUpdate(world);
+  // Zoom and navigation
+  CameraUpdate(world); 
+  
+  
 
   if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_TAB))
     world->mode = !world->mode;
@@ -263,10 +264,15 @@ void WorldUpdateFrame(
 }
 
 
-void WorldUpdateTurn(World *world) {
+void WorldUpdateTurn(World *world, Arena *turn_arena) {
+  // TODO: implement this function
   world->turn_count += 1;
   
   for (EachEntity(entity, world->entities->first)) {
-    entity->movement_left = entity->movement_cap;
+
+    if (entity->flags.is_enemyable)
+      AgentTurn(world, turn_arena, entity, NULL);
+
+    entity->movement_left = entity->movement_left;
   }
 }

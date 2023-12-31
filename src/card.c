@@ -17,8 +17,9 @@ void CardListPopAppend(CardList *to, CardList *from, U64 count)  {
       return; 
 
     if (to->last) {
-
-      // stitch em togther
+      
+      // Call 911 stitch em togther
+      // Call 780
 
       // there is house in new orleans they call it the rising 
 
@@ -100,7 +101,8 @@ void CardDraw(Card *card) {
     .width = DefaultCardSize.x - 30,
     .height = rect.y + DefaultCardSize.y - 5,
   };
-  DrawText(card_archetypes[card->data].name, card->screen_position.x + 10, card->screen_position.y + 10, 20, BLACK);
+  
+  DrawText(TextFormat("%u %s", card_archetypes[card->data].cost, card_archetypes[card->data].name), card->screen_position.x + 10, card->screen_position.y + 10, 20, BLACK);
   DrawTextInRectangle(GetFontDefault(), card_archetypes[card->data].description, description_rect, 15, BLACK);
 }
 

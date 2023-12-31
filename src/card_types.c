@@ -21,6 +21,14 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
     .cost = 2,
     .description = "shoot shott array",
     .card_type = CardType_attack,
+  },
+  {
+    .name = "Melee Attack",
+    .cost = 1,
+    .range = 0,
+    .card_type = CardType_attack,
+    .description = "Basic Attack",
+    .flags = CardFlags_damage_target,
   }
 };
 

@@ -59,7 +59,7 @@ struct World {
 World WorldInit(Arena *arena, U32 width, U32 height);
 void WorldLoad(World *world, Arena* arena, const char *filepath);
 void WorldSave(World *world, const char *filepath);
-void WorldDraw(World *world); // draws the whole world including entities
+void WorldDraw(World *world, Arena *turn_arena); // draws the whole world including entities
 
 void WorldUpdateFrame(
   World *world,
@@ -67,8 +67,7 @@ void WorldUpdateFrame(
   Arena *turn_arena, 
   Arena *temp_arena
 );
-void WorldUpdateTurn(World *world);
-
+void WorldUpdateTurn(World *world, Arena *turn_arena);
 
 // World Coordinates
 WorldCoord WorldCoordFromVector2(Vector2 v) ;
