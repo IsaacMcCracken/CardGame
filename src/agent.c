@@ -23,6 +23,15 @@ struct AStarList {
   U64 count;
 };
 
+typedef struct AgentMove AgentMove;
+struct AgentMove {
+  WorldCoord move_coord;
+  Entity *target;
+  U32 card_index;
+  U32 movement_cost;
+  I32 score;
+};
+
 
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
   // dont be scared this is just the absolute distance
@@ -265,4 +274,47 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
     DrawLineEx(start, end, 0.1, WHITE);
 
   }
+}
+
+void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
+  WorldCoord original = agent->grid_pos;
+  WorldCoord top_left = (WorldCoord){
+    .x = max(original.x - agent->movement_left, 0),
+    .y = max(original.y - agent->movement_left, 0),
+  };
+
+  WorldCoord bottom_right = (WorldCoord){
+    .x = min(original.x + agent->movement_left, world->width - 1),
+    .y = min(original.y + agent->movement_left, world->height - 1),
+  };
+
+
+
+  AgentMove move = { 0 };
+  for (U32 y = top_left.y; y <= bottom_right.y; y++) {
+    for (U32 x = top_left.x; x <= bottom_right.x; x++) {
+      WorldCoord coord = {x, y};
+      Entity *e = EntityFindByWorldCoord(world->entities, coord);
+      //
+      if (e && (e != agent)) {
+        I32 score = 0;
+        score -= (I32)Vector2Distance(Vector2FromWorldCoord(e->grid_pos), Vector2FromWorldCoord(original));
+
+
+        if ((!move.target) || (move.target && move.score < score)) {
+          move.target = e; 
+          move.score = score;
+          move.move_coord = e->grid_pos; 
+        } 
+      }
+    }
+  }
+
+  if (move.target) {
+    agent->path = WorldCoordListFindPath(world, turn_arena, original, move.move_coord, 0);
+    agent->path->len -= 1;
+  }
+
+    
+    
 }

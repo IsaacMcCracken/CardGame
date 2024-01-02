@@ -41,7 +41,7 @@ struct CardData {
   CardFlags flags;
 };
 
-#define MAX_CARD_ARCHETYPES 3
+#define MAX_CARD_ARCHETYPES 4
 extern const CardData card_archetypes[MAX_CARD_ARCHETYPES];
 
 
