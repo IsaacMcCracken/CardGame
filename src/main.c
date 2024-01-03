@@ -80,7 +80,7 @@ int main() {
     BeginDrawing();
       ClearBackground(BLACK);
       
-      WorldDraw(&world);
+      WorldDraw(&world, turn_arena);
 
     EndDrawing();
   }

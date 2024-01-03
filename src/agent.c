@@ -288,6 +288,14 @@ void AgentTurn(Arena *turn_arena, World *world, Entity *agent) {
     }
   }
 
-  agent->path = WorldCoordListFindPath(world,)
+  agent->path = WorldCoordListFindPath(world, turn_arena, agent->grid_pos, opponenent->grid_pos, 0);
+
+  U32 i;
+  for (i = 0; i < agent->path->len; i++) {
+    if (Vector2DistanceSqr(Vector2FromWorldCoord(agent->grid_pos), Vector2FromWorldCoord(agent->path->ptr[i])) > agent->movement_left * agent->movement_left)
+      break;
+  }
+
+  agent->path->len = i + 1;
 
 }

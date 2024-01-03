@@ -287,6 +287,6 @@ void GameGuiDraw(World *world) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(world);
+      WorldUpdateTurn(turn_arena, world);
     }
 }

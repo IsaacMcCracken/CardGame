@@ -28,6 +28,12 @@ enum {
   WorldMode_edit,
 };
 
+typedef struct TurnData TurnData;
+struct TurnData {
+  Entity *entities[4];
+  U32 entity_count;
+};
+
 
 typedef struct World World;
 struct World {
@@ -49,6 +55,8 @@ struct World {
   CardList *hand;
   CardList *discard;
 
+  TurnData turn_data;
+
   Texture *textures;
 
 };
@@ -59,7 +67,7 @@ struct World {
 World WorldInit(Arena *arena, U32 width, U32 height);
 void WorldLoad(World *world, Arena* arena, const char *filepath);
 void WorldSave(World *world, const char *filepath);
-void WorldDraw(World *world); // draws the whole world including entities
+void WorldDraw(World *world, Arena *turn_arena); // draws the whole world including entities
 
 void WorldUpdateFrame(
   World *world,
@@ -67,7 +75,7 @@ void WorldUpdateFrame(
   Arena *turn_arena, 
   Arena *temp_arena
 );
-void WorldUpdateTurn(World *world);
+void WorldUpdateTurn(Arena *turn_arena, World *world);
 
 
 // World Coordinates

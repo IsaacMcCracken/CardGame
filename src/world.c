@@ -86,7 +86,7 @@ void WorldSave(World *world, const char *filepath) {
 
 
 
-void WorldDraw(World *world) {
+void WorldDraw(World *world, Arena *turn_arena) {
   BeginMode2D(world->camera);
   {
     for (U32 i = 0; i < world->width * world->height; i++) {
@@ -222,7 +222,7 @@ void WorldDraw(World *world) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(world);
+      WorldUpdateTurn(turn_arena, world);
     }
 
   }
@@ -261,10 +261,28 @@ void WorldUpdateFrame(
 }
 
 
-void WorldUpdateTurn(World *world) {
-  world->turn_count += 1;
-  
-  for (EachEntity(entity, world->entities->first)) {
-    entity->movement_left = entity->movement_cap;
+void WorldUpdateTurn(Arena *turn_arena, World *world) {
+
+  // first we get the list of entities this turn
+
+  EntityFaction faction_turn = EntityFaction_neutral;
+  for (EachEntity(entity, world->entities->first)){
+    if (world->turn_data.entity_count >= 4 ) 
+      break;
+      
+    if (faction_turn) { // if the faction turn is not netural
+       if (entity->faction == faction_turn) {
+        world->turn_data.entities[world->turn_data.entity_count];
+        world->turn_data.entity_count += 1;
+       }
+    } else if (entity->faction) {
+       faction_turn = entity->faction;
+    }
   }
+
+  if (faction_turn == EntityFaction_enemy) {
+    for (EachEntity(entity, world->entities->first)) {
+      AgentTurn(turn_arena, world, entity);
+    }
+  } 
 }

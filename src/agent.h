@@ -17,4 +17,5 @@ WorldCoordList *WorldCoordListFindPath(
 );
 
 void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start);
+void AgentTurn(Arena *turn_arena, World *world, Entity *agent);
 #endif
