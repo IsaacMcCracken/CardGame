@@ -66,7 +66,7 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
         .zoom = 2 * width,
       },
       .turn_count = 0,
-      .entities = ArenaPush(arena, sizeof(EntityList)),
+      .entities = ArenaPush(arena, sizeof(Entities)),
       .hand = CardListInit(arena, 0),
       .discard = CardListInit(arena, 0),
       .deck = CardListInit(arena, 30),
@@ -271,8 +271,8 @@ void WorldUpdateTurn(World *world, Arena *turn_arena) {
   for (EachEntity(entity, world->entities->first)) {
 
     if (entity->flags.is_enemyable)
-      AgentTurn(world, turn_arena, entity, NULL);
+      AgentTurn(world, turn_arena, entity, world->hand);
 
-    entity->movement_left = entity->movement_left;
+    entity->movement_left = entity->movement_cap;
   }
 }

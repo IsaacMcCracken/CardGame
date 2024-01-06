@@ -37,7 +37,7 @@ struct World {
   U32 height;
   U32 width;
   Tile *tiles;
-  EntityList *entities;
+  Entities *entities;
   
   // player stuff
   U32 turn_count;

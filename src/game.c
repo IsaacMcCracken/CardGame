@@ -240,7 +240,7 @@ void EntityUpdatePathPosition(Entity *entity) {
 
 
 
-void EntityUpdate(EntityList *list, Arena *perm_arena) {
+void EntityUpdate(Entities *list, Arena *perm_arena) {
   // ForEachEntity(entity, list->first) {
   
   Entity *entity = list->first;

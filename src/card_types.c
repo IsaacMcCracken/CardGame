@@ -25,12 +25,14 @@ const CardData card_archetypes[MAX_CARD_ARCHETYPES] =  {
   {
     .name = "Melee Attack",
     .cost = 1,
-    .range = 0,
+    .range = 1,
     .card_type = CardType_attack,
     .description = "Basic Attack",
     .flags = CardFlags_damage_target,
+    .damage_target_amount = 7,
   }
 };
+
 
 void PlayCard(World *world, Entity *target) {
   /*

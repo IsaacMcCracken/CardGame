@@ -4,8 +4,10 @@
 #include <basetypes.h>
 #include <raylib.h>
 #include "arena.h"
+#include "card.h"
 
 #define ENTITY_NAME_SIZE 64
+typedef struct Entity Entity;
 
 
 
@@ -39,7 +41,17 @@ enum {
   EntityFaction_enemy,
 };
 
-typedef struct Entity Entity;
+typedef struct EntityMove EntityMove;
+struct EntityMove {
+  WorldCoord move_coord;
+  Entity *target;
+  Card *card;
+  U32 movement_cost;
+  I32 score;
+};
+
+
+
 struct Entity {
   Entity *next;
   Entity *prev;
@@ -58,7 +70,8 @@ struct Entity {
 
   WorldCoordList *path;
   U32 path_index;
-  F32 path_ratio;
+  
+  EntityMove *move;
 
   EntityFaction faction;
   EffectFlags effects;
@@ -70,16 +83,23 @@ struct Entity {
   U8 texture; // index into texture buffer
   F32 h_flip;
   U8 animation_state;
+
+  
 };
 
-
-typedef struct EntityList EntityList;
-struct EntityList {
+typedef struct Entities Entities;
+struct Entities {
   Entity *first;
   Entity *last;
   Entity *free_list;
   U64 count;
+  Arena *arena;
+  Entity **grid;
 };
+
+
+
+
 
 
 
@@ -88,8 +108,8 @@ struct EntityList {
 #define ForEachEntity(it, first) Entity *it = (first); for (Entity *__next__ = it->next; it != NULL; it = __next__, __next__ = it->next)
 
 
-Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name);
-Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord);
+Entity *EntityAlloc(Arena *arena, Entities *list, const char *name);
+Entity *EntityFindByWorldCoord(Entities *list, WorldCoord coord);
 
 
 #endif // ENTITY_H
