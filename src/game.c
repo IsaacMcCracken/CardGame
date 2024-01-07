@@ -90,8 +90,8 @@ void GamePlayUpdate(
     }
   }
 
-  if (world->grabbing_entity && !world->grabbing_entity->path) {
-    world->selected_path = WorldCoordListFindPath(world, temp_arena, world->grabbing_entity->grid_pos, mouse_coord, 0);
+  if (world->selected_entity && !world->selected_entity->path) {
+    world->selected_path = WorldCoordListFindPath(world, temp_arena, world->selected_entity->grid_pos, mouse_coord, 0);
   }
 
   // this is garbage will clean up later
@@ -116,10 +116,10 @@ void GamePlayUpdate(
   } else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_coord);
     if (entity_clicked) {
-      world->grabbing_entity = entity_clicked;
-    } else if (world->grabbing_entity) {
+      world->selected_entity = entity_clicked;
+    } else if (world->selected_entity) {
       // Move Entity Stuff
-      Entity *entity = world->grabbing_entity;
+      Entity *entity = world->selected_entity;
       if (world->selected_path) {
         I32 movement_distance = entity->movement_left;
         Vector2 center = {0.5f, 0.5f};
@@ -246,7 +246,7 @@ I32 EntityCompareY(void const *entity_a, void const *entity_b) {
   return a->grid_pos.y - b->grid_pos.y;
 }
 
-void EntitySort(EntityList *list, Arena *temp_arena) {
+void EntitySort(Entities *list, Arena *temp_arena) {
   TempArena temp = TempArenaInit(temp_arena);
 
   Entity **sort_array = ArenaPush(temp_arena, sizeof(Entity*) * list->count);
@@ -276,15 +276,19 @@ void EntitySort(EntityList *list, Arena *temp_arena) {
 
 void EntityUpdate(World *world, Arena *perm_arena) {
   // ForEachEntity(entity, list->first) {
-  EntityList *list = world->entities;
+  Entities *list = world->entities;
   EntitySort(list, perm_arena);
-  memset(world->entity_grid, 0, sizeof(Entity*) * world->width * world->height);
-  
+  if (world->entities->grid)
+    memset(world->entities->grid, 0, sizeof(Entity*) * world->width * world->height);
+  else
+    world->entities->grid = ArenaPush(perm_arena, sizeof(Entity*) * world->width * world->height);
+
+
   Entity *entity = list->first;
   while (entity) {
     Entity *next = entity->next;
     
-    world->entity_grid[WorldIndexFromWorldCoord(world, entity->grid_pos)] = entity;
+    world->entities->grid[WorldIndexFromWorldCoord(world, entity->grid_pos)] = entity;
     
     EntityUpdatePathPosition(entity);
 
@@ -349,7 +353,7 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
       for (U32 y = 0; y < world->height ; y++) {
         for (U32 x = 0; x < world->width; x++) {
           U32 index = WorldIndexFromWorldCoord(world, (WorldCoord){x, y});
-          if (world->entity_grid[index]) putchar(world->entity_grid[index]->name_buffer[0]);
+          if (world->entities->grid[index]) putchar(world->entities->grid[index]->name_buffer[0]);
           else putchar('*');
         }
         putchar('\n');

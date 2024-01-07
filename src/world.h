@@ -43,12 +43,11 @@ struct World {
   U32 height;
   U32 width;
   Tile *tiles;
-  EntityList *entities;
-  Entity **entity_grid;
+  Entities *entities;
   
   // player stuff
   U32 turn_count;
-  Entity *grabbing_entity;
+  Entity *selected_entity;
   Card *grabbing_card;
   WorldCoordList *selected_path;
 
@@ -84,6 +83,7 @@ WorldCoord WorldCoordFromVector2(Vector2 v) ;
 WorldCoord WorldCoordFromIndex(World *world, U32 Index);
 U32 WorldIndexFromWorldCoord(World *world, WorldCoord coord);
 Vector2 Vector2FromWorldCoord(WorldCoord coord);
+U32 WorldIndexFromVector2(World *world, Vector2 v);
 bool WorldCoordEqual(WorldCoord a, WorldCoord b);
 
 

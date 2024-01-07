@@ -1,4 +1,5 @@
 #include "agent.h"
+#include "card_types.h"
 #include "raymath.h"
 #include <stdlib.h>
 #include <assert.h>
@@ -15,7 +16,7 @@ struct AStarNode {
 };
 
 
-// Turn these structures into heap nodes
+// maybe turn these structures into heap nodes
 typedef struct AStarList AStarList;
 struct AStarList {
   AStarNode *first;
@@ -23,14 +24,6 @@ struct AStarList {
   U64 count;
 };
 
-typedef struct AgentMove AgentMove;
-struct AgentMove {
-  WorldCoord move_coord;
-  Entity *target;
-  U32 card_index;
-  U32 movement_cost;
-  I32 score;
-};
 
 
 U32 AStarNodeDistance(AStarNode *a, AStarNode *b) {
@@ -276,6 +269,76 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
   }
 }
 
+// Clean this up a fuck ton
+
+inline U32 WorldCoordDistanceSqr(WorldCoord a, WorldCoord b) {
+  return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+
+
+EntityMove EntityMoveBestForCard(World *world, Entity *agent, WorldCoord center, Card *card) {
+  EntityMove best_move = {0}; 
+  CardData data = card_archetypes[card->data];
+
+  U32 radius = data.range;
+  WorldCoord top_left = (WorldCoord){
+    .x = max(center.x - radius, 0),
+    .y = max(center.y - radius, 0),
+  };
+
+  WorldCoord bottom_right = (WorldCoord){
+    .x = min(center.x + radius, world->width - 1),
+    .y = min(center.y + radius, world->height - 1),
+  };
+
+  bool circle = radius <= 2;
+
+
+  // we loop through all the possible positions
+  WorldCoord coord;
+  for (coord.y = top_left.y; coord.y <= bottom_right.y; coord.y += 1) {
+    for (coord.x = top_left.x; coord.x <= bottom_right.x; coord.x += 1) {
+      EntityMove current_move = (EntityMove){.card = card};
+
+      U32 distance_sqr = WorldCoordDistanceSqr(coord, center);
+
+      if (circle && (distance_sqr > radius * radius))
+        continue;
+      
+      // Score is added if there is a greater distance betweeen players and enemies
+      current_move.score += (I32)(sqrtf(distance_sqr));
+      Entity *target = EntityFindByWorldCoord(world->entities, coord);
+
+
+      // TODO prioritise enemy targets
+      if (target) {
+        current_move.target = target;
+        if (data.flags & CardFlags_damage_target);
+          current_move.score += data.damage_target_amount * data.damage_target_amount;
+      }
+
+      if (current_move.score > best_move.score) {
+        best_move = current_move;
+      }
+    }
+  }  
+
+  return best_move;
+}
+
+EntityMove EntityMoveBestForCoord(World *world, Entity *agent, WorldCoord center, CardList *hand) {
+  EntityMove best_move = {0};
+  // for every card in the hand
+  for (EachCardNode(card, hand->first)) {
+    EntityMove current_move = EntityMoveBestForCard(world, agent, center, card);
+
+    if (current_move.score > best_move.score)
+      best_move = current_move;
+  }
+
+  return best_move;
+}
+
 void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
   WorldCoord original = agent->grid_pos;
   WorldCoord top_left = (WorldCoord){
@@ -289,29 +352,27 @@ void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
   };
 
 
+  // go through all the movement positions
+  // go through all the cards in the faction's hand
+  // if the card has a range greater than zero then go through all the possible target positions
+  //
 
-  AgentMove move = { 0 };
-  for (U32 y = top_left.y; y <= bottom_right.y; y++) {
-    for (U32 x = top_left.x; x <= bottom_right.x; x++) {
-      WorldCoord coord = {x, y};
-      Entity *e = EntityFindByWorldCoord(world->entities, coord);
-      //
-      if (e && (e != agent)) {
-        I32 score = 0;
-        score -= (I32)Vector2Distance(Vector2FromWorldCoord(e->grid_pos), Vector2FromWorldCoord(original));
+  EntityMove best_move = { 0 };
 
+  // for each positon;
+  WorldCoord coord;
+  for (coord.y = top_left.y; coord.y <= bottom_right.y; coord.y += 1) {
+    for (coord.x = top_left.x; coord.x <= bottom_right.x; coord.x += 1) {
+      EntityMove current_move = EntityMoveBestForCoord(world, agent, coord, hand);
+      current_move.score -= (I32)(sqrtf(WorldCoordDistanceSqr(coord, original)));
 
-        if ((!move.target) || (move.target && move.score < score)) {
-          move.target = e; 
-          move.score = score;
-          move.move_coord = e->grid_pos; 
-        } 
-      }
+      if (best_move.score < current_move.score)
+        best_move = current_move;
     }
   }
 
-  if (move.target) {
-    agent->path = WorldCoordListFindPath(world, turn_arena, original, move.move_coord, 0);
-    agent->path->len -= 1;
-  }
+  agent->path = WorldCoordListFindPath(world, turn_arena, original, best_move.move_coord, 0); 
+
+    
+    
 }

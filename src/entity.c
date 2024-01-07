@@ -3,13 +3,13 @@
 
 
 
-void EntityListAppend(EntityList *list, Entity *entity) {
+void EntitiesAppend(Entities *list, Entity *entity) {
   Entity *last = list->last; 
   if (list->last) {
     last->next = entity;
     entity->prev = last;
     list->last = entity;
-    list->count += 1;
+    list->count += 1; 
   } else {
     list->count = 1;
     list->first = entity;
@@ -17,9 +17,7 @@ void EntityListAppend(EntityList *list, Entity *entity) {
   }
 }
 
-
-
-Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
+Entity *EntityAlloc(Arena *arena, Entities *list, const char *name) {
   Entity *entity = NULL;
 
   if (list->free_list) {
@@ -32,7 +30,7 @@ Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
     entity = ArenaPush(arena, sizeof(Entity));
   }
   
-  EntityListAppend(list, entity);
+  EntitiesAppend(list, entity);
 
   // set up the entity
   entity->name_len = strlen(name);
@@ -42,7 +40,7 @@ Entity *EntityAlloc(Arena *arena, EntityList *list, const char *name) {
 }
 
 
-void EntityFree(EntityList *list, Entity *entity) {
+void EntityFree(Entities *list, Entity *entity) {
   Entity *next = entity->next;
   Entity *prev = entity->prev;
 
@@ -68,7 +66,7 @@ void EntityFree(EntityList *list, Entity *entity) {
 
 
 
-Entity *EntityFindByWorldCoord(EntityList *list, WorldCoord coord) {
+Entity *EntityFindByWorldCoord(Entities *list, WorldCoord coord) {
   Entity *entity = NULL;
   for (EachEntity(node, list->first)) {
     if (coord.x == node->grid_pos.x && coord.y == node->grid_pos.y) {

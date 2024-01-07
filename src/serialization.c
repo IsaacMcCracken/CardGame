@@ -13,7 +13,7 @@
 // the begining before modifying the level
 
 // returns the number of entities serialized
-U32 SerializeEntities(Arena *arena, EntityList *list) {
+U32 SerializeEntities(Arena *arena, Entities *list) {
   U32 count = 0;
   for (EachEntity(entity, list->first)) {
     SerializeEnity *s = ArenaPush(arena, sizeof(SerializeEnity));
