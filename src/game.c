@@ -62,10 +62,11 @@ void GamePlayUpdate(
   // Navigation and Zoom
   CameraUpdate(world);
 
+  
 
   // Card Grabbing and UI Stuff
   {
-    for (EachCardNodeReverse(card, world->hand->last)) {
+    for (EachCardNodeReverse(card, world->player.hand->last)) {
       if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){
         .x = card->screen_position.x,
         .y = card->screen_position.y,
@@ -73,7 +74,7 @@ void GamePlayUpdate(
         .height = 300})) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !world->grabbing_card) {
-          world->grabbing_card = CardListRemove(world->hand, card);
+          world->grabbing_card = CardListRemove(world->player.hand, card);
           
         } else 
           card->screen_position = Vector2Lerp(
@@ -103,12 +104,12 @@ void GamePlayUpdate(
       TraceLog(LOG_INFO, "Coord: (%i, %i)", target_coord.x, target_coord.y);
     if (target)  {
       CardData card = card_archetypes[world->grabbing_card->data];
-      CardListAppend(world->discard, world->grabbing_card);
+      CardListAppend(world->player.discard, world->grabbing_card);
 
       PlayCard(world, target);
 
     } else {
-      CardListAppend(world->hand, world->grabbing_card);
+      CardListAppend(world->player.hand, world->grabbing_card);
     }
     world->grabbing_card = NULL;
 
@@ -160,7 +161,7 @@ void GamePlayUpdate(
 
   if (c >= '0' && c <= '9') {
     c = c - '0';
-    CardListPopAppend(world->hand, world->deck, c);
+    CardListPopAppend(world->player.hand, world->player.deck, c);
   }
 }
 
@@ -258,7 +259,7 @@ void EntityUpdate(Entities *list, Arena *perm_arena) {
 void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
 
-    CardListHandDraw(world->hand);
+    CardListHandDraw(world->player.hand);
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
 
@@ -286,10 +287,10 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
     };
 
     DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
-    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
     DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
-    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {

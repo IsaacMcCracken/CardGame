@@ -67,9 +67,16 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
       },
       .turn_count = 0,
       .entities = ArenaPush(arena, sizeof(Entities)),
-      .hand = CardListInit(arena, 0),
-      .discard = CardListInit(arena, 0),
-      .deck = CardListInit(arena, 30),
+      .player = (Deity){
+        .hand = CardListInit(arena, 0),
+        .deck = CardListInit(arena, 30),
+        .discard = CardListInit(arena, 0),
+      },
+      .enemy = (Deity){
+        .hand = CardListInit(arena, 0),
+        .deck = CardListInit(arena, 30),
+        .discard = CardListInit(arena, 0),
+      },
       .textures = ArenaPush(arena, sizeof(Texture) * MAX_TEXTURES)
     };
 }
@@ -187,7 +194,7 @@ void WorldDraw(World *world, Arena *turn_arena) {
   if (world->mode == WorldMode_game){
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
 
-    CardListHandDraw(world->hand);
+    CardListHandDraw(world->player.hand);
     if (world->grabbing_card)
       CardDraw(world->grabbing_card);
 
@@ -215,10 +222,10 @@ void WorldDraw(World *world, Arena *turn_arena) {
     };
 
     DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
-    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
     DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
-    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
+    DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
@@ -271,7 +278,7 @@ void WorldUpdateTurn(World *world, Arena *turn_arena) {
   for (EachEntity(entity, world->entities->first)) {
 
     if (entity->flags.is_enemyable)
-      AgentTurn(world, turn_arena, entity, world->hand);
+      AgentTurn(world, turn_arena, entity, world->enemy.hand);
 
     entity->movement_left = entity->movement_cap;
   }

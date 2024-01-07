@@ -29,6 +29,13 @@ enum {
 };
 
 
+typedef struct TurnData TurnData;
+struct TurnData {
+  Entity *characters[128]; // need a more dynamic solution but a static array will work for now;
+  U32 current_turn;
+  U32 current_turn_len;
+};
+
 typedef struct World World;
 struct World {
   WorldMode mode; 
@@ -45,10 +52,10 @@ struct World {
   Card *grabbing_card;
   WorldCoordList *selected_path;
 
-  CardList *deck;
-  CardList *hand;
-  CardList *discard;
+  Deity player;
+  Deity enemy;
 
+  // maybe have asset structure
   Texture *textures;
 
 };

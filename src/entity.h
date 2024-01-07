@@ -98,7 +98,14 @@ struct Entities {
 };
 
 
-
+// controller of the Entities
+typedef struct Deity Deity;
+struct Deity {
+  EntityFaction faction;
+  CardList *deck;
+  CardList *hand;
+  CardList *discard;
+};
 
 
 
