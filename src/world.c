@@ -62,6 +62,7 @@ World WorldInit(Arena *arena, U32 width, U32 height) {
       .width = width,
       .height = height,
       .tiles = ArenaPush(arena, sizeof(Tile) * width * height),
+      .entity_grid = ArenaPush(arena, sizeof(Entity*) * width * height),
       .camera = (Camera2D) {
         .zoom = 2 * width,
       },
@@ -150,7 +151,7 @@ void WorldDraw(World *world, Arena *turn_arena) {
       Texture texture = world->textures[entity->texture];
       Rectangle texture_source_rect = {(texture.width/6) * entity->animation_state, 0, (texture.width/6) * entity->h_flip, texture.height};
       DrawTexturePro(texture, texture_source_rect, entity_rect, Vector2Zero(), 0, WHITE);
-      
+
 
       if (entity == world->grabbing_entity) {
         DrawRectangleLinesEx(entity_rect, 0.05, GREEN );
@@ -222,7 +223,7 @@ void WorldDraw(World *world, Arena *turn_arena) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(turn_arena, world);
+      WorldUpdateTurn(world, turn_arena);
     }
 
   }
@@ -243,9 +244,12 @@ void WorldUpdateFrame(
   Arena *temp_arena
 ) {
   // TODO: implement this function
+  
 
-
-  CameraUpdate(world);
+  // Zoom and navigation
+  CameraUpdate(world); 
+  
+  
 
   if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_TAB))
     world->mode = !world->mode;
@@ -257,32 +261,19 @@ void WorldUpdateFrame(
   if (world->mode == WorldMode_game) 
     GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
 
-  EntityUpdate(world->entities, perm_arena); 
+  EntityUpdate(world, perm_arena); 
 }
 
 
-void WorldUpdateTurn(Arena *turn_arena, World *world) {
+void WorldUpdateTurn(World *world, Arena *turn_arena) {
+  // TODO: implement this function
+  world->turn_count += 1;
+  
+  for (EachEntity(entity, world->entities->first)) {
 
-  // first we get the list of entities this turn
+    if (entity->flags.is_enemyable)
+      AgentTurn(world, turn_arena, entity, NULL);
 
-  EntityFaction faction_turn = EntityFaction_neutral;
-  for (EachEntity(entity, world->entities->first)){
-    if (world->turn_data.entity_count >= 4 ) 
-      break;
-      
-    if (faction_turn) { // if the faction turn is not netural
-       if (entity->faction == faction_turn) {
-        world->turn_data.entities[world->turn_data.entity_count];
-        world->turn_data.entity_count += 1;
-       }
-    } else if (entity->faction) {
-       faction_turn = entity->faction;
-    }
+    entity->movement_left = entity->movement_left;
   }
-
-  if (faction_turn == EntityFaction_enemy) {
-    for (EachEntity(entity, world->entities->first)) {
-      AgentTurn(turn_arena, world, entity);
-    }
-  } 
 }

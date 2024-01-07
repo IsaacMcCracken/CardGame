@@ -49,13 +49,16 @@ int main() {
 
   world.tiles[57] = Tile_wall;
 
+  world.tiles[57] = Tile_wall;
+
   Entity *player = EntityAlloc(perm_arena, world.entities, "kaiden");
   player->health_cap = 50;
   player->health = 20;
   player->movement_cap = 10;
   player->movement_left = 10;
   player->h_flip = 1;
-  player->animation_state = AnimationState_running;
+  player->animation_state = AnimationState_standing;
+  player->flags = (EntityFlags){.is_playable = true};
 
   Entity *enemy = EntityAlloc(perm_arena, world.entities, "susan");
   enemy->health_cap = 7;
@@ -66,6 +69,8 @@ int main() {
   enemy->visual_pos = (Vector2){10, 10};
   enemy->h_flip = 1;
   enemy->animation_state = AnimationState_attacking;
+  enemy->flags = (EntityFlags){.is_enemyable = true};
+
   
   SerializeWorld(temp_arena, &world, "test.world");
   LoadWorld(temp_arena, &world, "test.world");
@@ -81,6 +86,7 @@ int main() {
       ClearBackground(BLACK);
       
       WorldDraw(&world, turn_arena);
+      
 
     EndDrawing();
   }

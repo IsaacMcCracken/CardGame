@@ -44,6 +44,7 @@ struct World {
   U32 width;
   Tile *tiles;
   EntityList *entities;
+  Entity **entity_grid;
   
   // player stuff
   U32 turn_count;
@@ -75,7 +76,7 @@ void WorldUpdateFrame(
   Arena *turn_arena, 
   Arena *temp_arena
 );
-void WorldUpdateTurn(Arena *turn_arena, World *world);
+void WorldUpdateTurn( World *world, Arena *turn_arena);
 
 
 // World Coordinates

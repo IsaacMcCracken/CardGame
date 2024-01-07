@@ -25,8 +25,11 @@ struct AStarList {
 
 typedef struct AgentMove AgentMove;
 struct AgentMove {
-  WorldCoord coord;
-  I32 cost;
+  WorldCoord move_coord;
+  Entity *target;
+  U32 card_index;
+  U32 movement_cost;
+  I32 score;
 };
 
 
@@ -269,33 +272,46 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
     Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
 
     DrawLineEx(start, end, 0.1, WHITE);
-
+    DrawCircleV(end, 0.05, WHITE);
   }
 }
 
-void AgentTurn(Arena *turn_arena, World *world, Entity *agent) {
-  EntityFaction opposing_faction = (agent->faction == EntityFaction_player)? EntityFaction_enemy : EntityFaction_player;
-  Entity *opponenent = NULL;
-  F32 opponenent_distance_sqr = 0;
+void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
+  WorldCoord original = agent->grid_pos;
+  WorldCoord top_left = (WorldCoord){
+    .x = max(original.x - agent->movement_left, 0),
+    .y = max(original.y - agent->movement_left, 0),
+  };
 
-  for (EachEntity(entity, world->entities->first)) {
-    if (entity->faction == opposing_faction) {
-      if (opponenent) {
-        F32 distance_sqr = Vector2DistanceSqr(Vector2FromWorldCoord(entity->grid_pos), Vector2FromWorldCoord(agent->grid_pos));
-        if (distance_sqr < opponenent_distance_sqr)
-          opponenent = entity;
-      } else opponenent = entity; 
+  WorldCoord bottom_right = (WorldCoord){
+    .x = min(original.x + agent->movement_left, world->width - 1),
+    .y = min(original.y + agent->movement_left, world->height - 1),
+  };
+
+
+
+  AgentMove move = { 0 };
+  for (U32 y = top_left.y; y <= bottom_right.y; y++) {
+    for (U32 x = top_left.x; x <= bottom_right.x; x++) {
+      WorldCoord coord = {x, y};
+      Entity *e = EntityFindByWorldCoord(world->entities, coord);
+      //
+      if (e && (e != agent)) {
+        I32 score = 0;
+        score -= (I32)Vector2Distance(Vector2FromWorldCoord(e->grid_pos), Vector2FromWorldCoord(original));
+
+
+        if ((!move.target) || (move.target && move.score < score)) {
+          move.target = e; 
+          move.score = score;
+          move.move_coord = e->grid_pos; 
+        } 
+      }
     }
   }
 
-  agent->path = WorldCoordListFindPath(world, turn_arena, agent->grid_pos, opponenent->grid_pos, 0);
-
-  U32 i;
-  for (i = 0; i < agent->path->len; i++) {
-    if (Vector2DistanceSqr(Vector2FromWorldCoord(agent->grid_pos), Vector2FromWorldCoord(agent->path->ptr[i])) > agent->movement_left * agent->movement_left)
-      break;
+  if (move.target) {
+    agent->path = WorldCoordListFindPath(world, turn_arena, original, move.move_coord, 0);
+    agent->path->len -= 1;
   }
-
-  agent->path->len = i + 1;
-
 }
