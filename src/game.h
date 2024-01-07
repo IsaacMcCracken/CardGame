@@ -14,7 +14,7 @@ void GamePlayUpdate(
 );
 
 
-void EntityUpdate(Entities *list, Arena *perm_arena);
+void EntityUpdate(World *world, Arena *perm_arena);
 void GameGuiDraw(World *world, Arena *turn_arena);
 void CameraUpdate(World *world);
 

@@ -252,10 +252,10 @@ WorldCoordList *WorldCoordListFindPath(
     }
   }
 
-  TraceLog(LOG_INFO, "Open List Count: %lu, Closed List Count: %lu, Iter: %lu", open_list->count, closed_list->count, iter);
-  TraceLog(LOG_DEBUG, "Seriously what the fuck!");
   return NULL;
 }
+
+
 
 
 void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
@@ -265,7 +265,7 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
     Vector2 end = Vector2Add(Vector2FromWorldCoord(list->ptr[i + 1]), (Vector2){0.5, 0.5});
 
     DrawLineEx(start, end, 0.1, WHITE);
-
+    DrawCircleV(end, 0.05, WHITE);
   }
 }
 

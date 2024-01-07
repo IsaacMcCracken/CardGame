@@ -54,7 +54,7 @@ struct World {
 
   Deity player;
   Deity enemy;
-
+  TurnData turn_data;
   // maybe have asset structure
   Texture *textures;
 

@@ -61,22 +61,22 @@ void EditorUpdateFrame(
     if (entity_selected)
       world->selected_entity = entity_selected;
   }
-  if (mouse_world_pos.x >= 0 && mouse_world_pos.y >= 0 && mouse_world_pos.x < world->width && mouse_world_pos.y < world->height) {
+if (mouse_world_pos.x >= 0 && mouse_world_pos.y >= 0 && mouse_world_pos.x < world->width && mouse_world_pos.y < world->height) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-        world->tiles[index] = Tile_wall;
-    }
+  const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+  world->tiles[index] = Tile_wall;
+  }
 
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-        const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
-        world->tiles[index] = Tile_void;
-      }
+  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+  const U32 index = WorldIndexFromVector2(world, mouse_world_pos);
+  world->tiles[index] = Tile_void;
+  }
   }
 }
 
 void EditorDraw(void) {
-
+  
   // DrawText("Editing", 0, 0, 20, WHITE);
   GuiDrawIcon(ICON_FILE_SAVE_CLASSIC, 5, 5, 3, WHITE);
   GuiEntityEditor(&entity_editor_state);
-}
+  }

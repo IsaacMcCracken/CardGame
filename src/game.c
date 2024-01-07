@@ -4,6 +4,7 @@
 #include <raymath.h>
 #include <raygui.h>
 #include <string.h>
+#include <stdlib.h> // for quicksort()
 
 
 void CameraUpdate(World *world) {
@@ -239,15 +240,57 @@ void EntityUpdatePathPosition(Entity *entity) {
   } 
 }
 
+I32 EntityCompareY(void const *entity_a, void const *entity_b) {
+  Entity const *a = entity_a;
+  Entity const *b = entity_b;
 
+  return a->grid_pos.y - b->grid_pos.y;
+}
 
-void EntityUpdate(Entities *list, Arena *perm_arena) {
-  // ForEachEntity(entity, list->first) {
+void EntitySort(Entities *list, Arena *temp_arena) {
+  TempArena temp = TempArenaInit(temp_arena);
+
+  Entity **sort_array = ArenaPush(temp_arena, sizeof(Entity*) * list->count);
   
+  U32 i = 0;
+  for (EachEntity(entity, list->first)) {
+    sort_array[i] = entity;
+    i += 1;
+  }
+
+  qsort(sort_array, list->count, sizeof(Entity*), EntityCompareY);
+
+  for (i = 0; i < list->count; i += 1) {
+    if (i > 0) sort_array[i]->prev = sort_array[i - 1];
+    if (i < list->count - 1) sort_array[i]->next = sort_array[i + 1];
+  }
+  // put the caps on
+  sort_array[0]->prev = NULL;
+  sort_array[list->count - 1]->next = NULL;
+
+  list->first = sort_array[0];
+  list->last = sort_array[list->count - 1]; 
+
+
+  TempArenaDeinit(temp);
+}
+
+void EntityUpdate(World *world, Arena *perm_arena) {
+  // ForEachEntity(entity, list->first) {
+  Entities *list = world->entities;
+  EntitySort(list, perm_arena);
+  if (world->entities->grid)
+    memset(world->entities->grid, 0, sizeof(Entity*) * world->width * world->height);
+  else
+    world->entities->grid = ArenaPush(perm_arena, sizeof(Entity*) * world->width * world->height);
+
+
   Entity *entity = list->first;
   while (entity) {
     Entity *next = entity->next;
-
+    
+    world->entities->grid[WorldIndexFromWorldCoord(world, entity->grid_pos)] = entity;
+    
     EntityUpdatePathPosition(entity);
 
 
@@ -255,6 +298,8 @@ void EntityUpdate(Entities *list, Arena *perm_arena) {
   }
 }
 
+// get rid of this 
+#include <stdio.h>
 
 void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
@@ -286,6 +331,14 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
       .y = GetScreenHeight() - 130,
     };
 
+    //debug
+    Rectangle print_entity_grid_rect = (Rectangle){
+      .height = 30,
+      .width = 80,
+      .x = GetScreenWidth() - 90,
+      .y = GetScreenHeight() - 170,
+    };
+
     DrawRectangleRounded(discard_rect, .4, 2, RAYWHITE);
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.discard->count), (Vector2){40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
@@ -296,4 +349,18 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
     if (GuiButton(end_turn_rect, "End Turn")) {
       WorldUpdateTurn(world, turn_arena);
     }
+
+    if (GuiButton(print_entity_grid_rect, "Print Entities")) {
+      for (U32 y = 0; y < world->height ; y++) {
+        for (U32 x = 0; x < world->width; x++) {
+          U32 index = WorldIndexFromWorldCoord(world, (WorldCoord){x, y});
+          if (world->entities->grid[index]) putchar(world->entities->grid[index]->name_buffer[0]);
+          else putchar('*');
+        }
+        putchar('\n');
+      }
+      
+    }
+
+
 }

@@ -1,5 +1,7 @@
+
 #include "rayutil.h"
 #include <stdio.h>
+#include <raygui.h>
 #include <string.h>
 
 void DrawTextInRectangle(Font font, const char *text, Rectangle rec, float font_size, Color color) {
@@ -64,3 +66,4 @@ U8 *LoadFileDataArena(Arena *arena, const char *filepath, U32 *bytes_read) {
 
   return NULL;
 }
+

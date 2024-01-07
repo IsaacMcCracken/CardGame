@@ -267,7 +267,7 @@ void WorldUpdateFrame(
   if (world->mode == WorldMode_game) 
     GamePlayUpdate(world, perm_arena, turn_arena, temp_arena);
 
-  EntityUpdate(world->entities, perm_arena); 
+  EntityUpdate(world, perm_arena); 
 }
 
 
