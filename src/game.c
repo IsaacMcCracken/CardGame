@@ -239,7 +239,7 @@ void EntityUpdatePathPosition(Entity *entity) {
   } 
 }
 
-I32 EntityCompareY(void const *entity_a, void const *entity_b) {
+int EntityCompareY(void const *entity_a, void const *entity_b) {
   Entity const *a = entity_a;
   Entity const *b = entity_b;
 
