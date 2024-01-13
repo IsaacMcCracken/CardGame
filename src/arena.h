@@ -33,7 +33,7 @@ void ArenaDeinit(Arena *arena);
 void *ArenaPushNoZero(Arena *arena, U64 size);
 void *ArenaPush(Arena *arena, U64 size);
 void ArenaReset(Arena *arena);
-inline ArenaSetAutoAlign(Arena *arena, U64 align) {
+static inline void ArenaSetAutoAlign(Arena *arena, U64 align) {
   arena->align = align;
 }
 

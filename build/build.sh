@@ -11,4 +11,4 @@ for framework in "${frameworks[@]}"; do
   framework_flags+=("-framework" "$framework")
 done
 
-clang -o "$name" $source_directory -I $include_directory -L $library_directory "${framework_flags[@]}" "${other[@]}"
+clang -o "$name" $source_directory -I $include_directory -L $library_directory "${framework_flags[@]}" "${other[@]}" -std=c11
