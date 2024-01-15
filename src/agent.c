@@ -3,6 +3,7 @@
 #include "raymath.h"
 #include <stdlib.h>
 #include <assert.h>
+#include "rayutil.h"
 
 
 
@@ -271,10 +272,6 @@ void WorldCoordListDraw(World *world, WorldCoordList *list, U32 start) {
 
 // Clean this up a fuck ton
 
-inline U32 WorldCoordDistanceSqr(WorldCoord a, WorldCoord b) {
-  return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-}
-
 
 EntityMove EntityMoveBestForCard(World *world, Entity *agent, WorldCoord center, Card *card) {
   EntityMove best_move = {0}; 
@@ -282,13 +279,13 @@ EntityMove EntityMoveBestForCard(World *world, Entity *agent, WorldCoord center,
 
   U32 radius = data.range;
   WorldCoord top_left = (WorldCoord){
-    .x = max(center.x - radius, 0),
-    .y = max(center.y - radius, 0),
+    .x = Max(center.x - radius, 0),
+    .y = Max(center.y - radius, 0),
   };
 
   WorldCoord bottom_right = (WorldCoord){
-    .x = min(center.x + radius, world->width - 1),
-    .y = min(center.y + radius, world->height - 1),
+    .x = Min(center.x + radius, world->width - 1),
+    .y = Min(center.y + radius, world->height - 1),
   };
 
   bool circle = radius <= 2;
@@ -313,7 +310,7 @@ EntityMove EntityMoveBestForCard(World *world, Entity *agent, WorldCoord center,
       // TODO prioritise enemy targets
       if (target) {
         current_move.target = target;
-        if (data.flags & CardFlags_damage_target);
+        if (data.flags & CardFlags_damage_target)
           current_move.score += data.damage_target_amount * data.damage_target_amount;
       }
 
@@ -342,13 +339,13 @@ EntityMove EntityMoveBestForCoord(World *world, Entity *agent, WorldCoord center
 void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
   WorldCoord original = agent->grid_pos;
   WorldCoord top_left = (WorldCoord){
-    .x = max(original.x - agent->movement_left, 0),
-    .y = max(original.y - agent->movement_left, 0),
+    .x = Max(original.x - agent->movement_left, 0),
+    .y = Max(original.y - agent->movement_left, 0),
   };
 
   WorldCoord bottom_right = (WorldCoord){
-    .x = min(original.x + agent->movement_left, world->width - 1),
-    .y = min(original.y + agent->movement_left, world->height - 1),
+    .x = Min(original.x + agent->movement_left, world->width - 1),
+    .y = Min(original.y + agent->movement_left, world->height - 1),
   };
 
 
