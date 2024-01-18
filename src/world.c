@@ -246,10 +246,10 @@ void WorldDraw(World *world, Arena *turn_arena) {
 void WorldUpdateFrame(
   World *world,
   Arena *perm_arena, 
+  Arena *room_arena,
   Arena *turn_arena, 
   Arena *temp_arena
 ) {
-  // TODO: implement this function
   
 
   // Zoom and navigation
@@ -282,4 +282,11 @@ void WorldUpdateTurn(World *world, Arena *turn_arena) {
 
     entity->movement_left = entity->movement_cap;
   }
+  EndTurn(world);
+}
+
+
+void EndTurn(World *world) {
+  world->turn_count += 1;
+  world->turn_data.current_turn = (world->turn_data.current_turn + 1) % world->turn_data.character_quantity;
 }

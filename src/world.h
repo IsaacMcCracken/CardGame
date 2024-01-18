@@ -32,6 +32,7 @@ enum {
 typedef struct TurnData TurnData;
 struct TurnData {
   Entity *characters[128]; // need a more dynamic solution but a static array will work for now;
+  U32 character_quantity;
   U32 current_turn;
   U32 current_turn_len;
 };
@@ -60,6 +61,8 @@ struct World {
 
 };
 
+// ends the turn
+void EndTurn(World *world);
 
 
 // World 
@@ -70,8 +73,9 @@ void WorldDraw(World *world, Arena *turn_arena); // draws the whole world includ
 
 void WorldUpdateFrame(
   World *world,
-  Arena *perm_arena, 
-  Arena *turn_arena, 
+  Arena *perm_arena,
+  Arena *room_arena,
+  Arena *turn_arena,
   Arena *temp_arena
 );
 void WorldUpdateTurn(World *world, Arena *turn_arena);

@@ -91,7 +91,7 @@ void GamePlayUpdate(
     }
   }
 
-  if (world->selected_entity && !world->selected_entity->path) {
+  if (world->selected_entity && !world->selected_entity->path && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
     world->selected_path = WorldCoordListFindPath(world, temp_arena, world->selected_entity->grid_pos, mouse_coord, 0);
   }
 
@@ -121,7 +121,7 @@ void GamePlayUpdate(
     } else if (world->selected_entity) {
       // Move Entity Stuff
       Entity *entity = world->selected_entity;
-      if (world->selected_path) {
+      if (world->selected_path && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
         I32 movement_distance = entity->movement_left;
         Vector2 center = {0.5f, 0.5f};
 
