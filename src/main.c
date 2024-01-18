@@ -5,6 +5,7 @@
 #include "world.h"
 #include "rayutil.h"
 #include "asset.h"
+#include "room.h"
 
 // temporary
 #include "serialization.h"
@@ -41,7 +42,9 @@ int main() {
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
   Arena *turn_arena = ArenaInit(Megabyte(100)); // This is for allocations that will only last a turn *eg. A path list
   Arena *temp_arena = ArenaInit(Megabyte(100)); // this is for frame allocations any thing that is only for a frame
+  Arena *room_arena = AremaInit(Megabyte(100)); // this is for everything that'll last a turn such as battles
   
+  // for right now we'll assume we start in a battle.. for simplicity
 
   World world = WorldInit(perm_arena, 20, 20);
 
