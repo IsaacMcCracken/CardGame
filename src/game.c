@@ -353,6 +353,11 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
+    // Game Intermediate Mode Gui
+    if (GuiButton(end_turn_rect, "End Turn")) {
+      EndTurn(world);
+      WorldUpdateTurn(world, turn_arena);
+    }
 
     if (GuiButton(print_entity_grid_rect, "Print Entities")) {
       for (U32 y = 0; y < world->height ; y++) {
