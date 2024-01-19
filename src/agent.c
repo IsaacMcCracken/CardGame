@@ -368,8 +368,6 @@ void AgentTurn(World *world, Arena *turn_arena, Entity *agent, CardList *hand) {
     }
   }
 
-  agent->path = WorldCoordListFindPath(world, turn_arena, original, best_move.move_coord, 0); 
-
-    
-    
+  agent->path = WorldCoordListFindPath(world, turn_arena, original, best_move.move_coord, 0);
+  EndTurn(world);
 }

@@ -125,7 +125,7 @@ void GamePlayUpdate(
     }
   }
 
-  if (world->selected_entity && !world->selected_entity->path && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
+  if (world->selected_entity && !world->selected_entity->path && world->selected_entity == world->turn_data.characters[world->turn_data.current_character]) {
     world->selected_path = WorldCoordListFindPath(world, temp_arena, world->selected_entity->grid_pos, mouse_coord, 0);
   }
 
@@ -156,7 +156,7 @@ void GamePlayUpdate(
     if (entity_clicked && world->selected_path == NULL) {
       world->selected_entity = entity_clicked;
     }
-    else if (world->selected_entity && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
+    else if (world->selected_entity && world->selected_entity == world->turn_data.characters[world->turn_data.current_character]) {
       if (world->selected_path) {
         EntityMoveEntity(turn_arena, world);
       }
@@ -308,8 +308,6 @@ void EntityUpdate(World *world, Arena *perm_arena) {
   }
 }
 
-// get rid of this 
-#include <stdio.h>
 
 void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
@@ -355,10 +353,6 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawRectangleRounded(deck_rect, .4, 2, RAYWHITE);
     DrawTextEx(GetFontDefault(), TextFormat("%lu", world->player.deck->count), (Vector2){GetScreenWidth() - 40, GetScreenHeight() - 50}, 20, 1, BLACK);
     
-    // Game Intermediate Mode Gui
-    if (GuiButton(end_turn_rect, "End Turn")) {
-      WorldUpdateTurn(world, turn_arena);
-    }
 
     if (GuiButton(print_entity_grid_rect, "Print Entities")) {
       for (U32 y = 0; y < world->height ; y++) {

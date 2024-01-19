@@ -33,7 +33,7 @@ typedef struct TurnData TurnData;
 struct TurnData {
   Entity *characters[128]; // need a more dynamic solution but a static array will work for now;
   U32 character_quantity;
-  U32 current_turn;
+  U32 current_character; // index inter characters array
   U32 current_turn_len;
 };
 

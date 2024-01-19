@@ -229,11 +229,10 @@ void WorldDraw(World *world, Arena *turn_arena) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
+      EndTurn(world);
       WorldUpdateTurn(world, turn_arena);
     }
-
   }
-
 }
 
   if (world->mode == WorldMode_edit) {
@@ -274,19 +273,21 @@ void WorldUpdateFrame(
 void WorldUpdateTurn(World *world, Arena *turn_arena) {
   // TODO: implement this function
   world->turn_count += 1;
-  
   for (EachEntity(entity, world->entities->first)) {
 
     if (entity->flags.is_enemyable)
       AgentTurn(world, turn_arena, entity, world->enemy.hand);
-
-    entity->movement_left = entity->movement_cap;
   }
-  EndTurn(world);
 }
 
 
 void EndTurn(World *world) {
   world->turn_count += 1;
-  world->turn_data.current_turn = (world->turn_data.current_turn + 1) % world->turn_data.character_quantity;
+  Entity *current_character =  world->turn_data.characters[world->turn_data.current_character];
+  
+  // reset entity's things
+  current_character->movement_left = current_character->movement_cap;
+  current_character->action_count = current_character->action_cap;
+  
+  world->turn_data.current_character = (world->turn_data.current_character + 1) % world->turn_data.character_quantity;
 }

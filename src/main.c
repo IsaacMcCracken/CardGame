@@ -74,7 +74,7 @@ int main() {
   // just for starting ill leave this here
   world.turn_data.characters[0] = player;
   world.turn_data.characters[1] = enemy;
-  world.turn_data.current_turn = 0;
+  world.turn_data.current_character = 0;
   world.turn_data.character_quantity = 2;
 
   SerializeWorld(temp_arena, &world, "test.world");
