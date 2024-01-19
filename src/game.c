@@ -129,7 +129,7 @@ void GamePlayUpdate(
     world->selected_path = WorldCoordListFindPath(world, temp_arena, world->selected_entity->grid_pos, mouse_coord, 0);
   }
 
-  // this is garbage will clean up later
+  
   if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
     world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
   }
@@ -143,7 +143,6 @@ void GamePlayUpdate(
       CardListAppend(world->player.discard, world->grabbing_card);
 
       PlayCard(world, target);
-
     }
     else {
       CardListAppend(world->player.hand, world->grabbing_card);
@@ -153,18 +152,21 @@ void GamePlayUpdate(
   }
   else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_coord);
-    if (entity_clicked) {
+    // check so we dont select another entity while pathfinding
+    if (entity_clicked && world->selected_path == NULL) {
       world->selected_entity = entity_clicked;
     }
-    else if (world->selected_entity) {
-      // Move Entity Stuff
-      Entity *entity = world->selected_entity;
-      if (world->selected_path && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
+    else if (world->selected_entity && world->selected_entity == world->turn_data.characters[world->turn_data.current_turn]) {
+      if (world->selected_path) {
         EntityMoveEntity(turn_arena, world);
       }
     }
   } 
-  
+
+  if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+    world->selected_entity = NULL;
+    world->selected_path = NULL;
+  }
 
   I32 c = GetCharPressed();
 
