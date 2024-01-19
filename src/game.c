@@ -5,6 +5,7 @@
 #include <raygui.h>
 #include <string.h>
 #include <stdlib.h> // for quicksort()
+#include <stdio.h> // for putchar()
 
 
 void CameraUpdate(World *world) {
