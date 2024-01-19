@@ -41,13 +41,13 @@ int main() {
   Arena *perm_arena = ArenaInit(Megabyte(100)); // this is for permanent allocations *eg. world data, entities, cards, 
   Arena *turn_arena = ArenaInit(Megabyte(100)); // This is for allocations that will only last a turn *eg. A path list
   Arena *temp_arena = ArenaInit(Megabyte(100)); // this is for frame allocations any thing that is only for a frame
+  Arena *room_arena = ArenaInit(Megabyte(100)); // this is for everything that'll last a turn such as battles
   
+  // for right now we'll assume we start in a battle.. for simplicity
 
   World world = WorldInit(perm_arena, 20, 20);
 
   AssetLoadTexture(&world);
-
-  world.tiles[57] = Tile_wall;
 
   world.tiles[57] = Tile_wall;
 
@@ -71,7 +71,12 @@ int main() {
   enemy->animation_state = AnimationState_attacking;
   enemy->flags = (EntityFlags){.is_enemyable = true};
 
-  
+  // just for starting ill leave this here
+  world.turn_data.characters[0] = player;
+  world.turn_data.characters[1] = enemy;
+  world.turn_data.current_character = 0;
+  world.turn_data.character_quantity = 2;
+
   SerializeWorld(temp_arena, &world, "test.world");
   LoadWorld(temp_arena, &world, "test.world");
 
@@ -79,7 +84,7 @@ int main() {
     // Update 
     ArenaReset(temp_arena);
     
-    WorldUpdateFrame(&world, perm_arena, turn_arena, temp_arena);
+    WorldUpdateFrame(&world, perm_arena, room_arena, turn_arena, temp_arena);
 
     // Draw 
     BeginDrawing();

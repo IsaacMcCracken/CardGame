@@ -50,6 +50,44 @@ void CameraUpdate(World *world) {
 
 }
 
+
+void EntityMoveEntity(Arena *turn_arena, World *world) {
+  Entity *entity = world->selected_entity;
+  I32 movement_distance = entity->movement_left;
+  Vector2 center = {0.5f, 0.5f};
+
+  U32 i;
+  Vector2 difference;
+  for (i = 0; i < world->selected_path->len - 1; i++) {
+
+      Color path_color = WHITE;
+      Vector2 first_pos = Vector2FromWorldCoord(world->selected_path->ptr[i]);
+      Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
+
+
+      difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
+
+      if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
+        break;
+    }
+
+  WorldCoordList *new_path = ArenaPushNoZero(turn_arena, sizeof(WorldCoordList));
+  new_path->len = i + 1;
+  new_path->ptr = ArenaPushNoZero(turn_arena, sizeof(WorldCoord) * new_path->len);
+
+  memcpy(new_path->ptr, world->selected_path->ptr, sizeof(WorldCoord) * new_path->len);
+
+
+  world->selected_path = NULL;
+  entity->path = new_path;
+  if ((I32)Vector2Length(difference) >= entity->movement_left) {
+    entity->movement_left = 0;
+  }
+  else entity->movement_left -= (I32)Vector2Length(difference);
+}
+
+
+
 void GamePlayUpdate(  
   World *world,
   Arena *perm_arena, 
@@ -59,10 +97,6 @@ void GamePlayUpdate(
   Vector2 mouse_screen_position = GetMousePosition();
   Vector2 mouse_world_position = GetScreenToWorld2D(mouse_screen_position, world->camera);
   WorldCoord mouse_coord = WorldCoordFromVector2(mouse_world_position);
-
-  // Navigation and Zoom
-  CameraUpdate(world);
-
   
 
   // Card Grabbing and UI Stuff
@@ -91,14 +125,15 @@ void GamePlayUpdate(
     }
   }
 
-  if (world->selected_entity && !world->selected_entity->path) {
+  if (world->selected_entity && !world->selected_entity->path && world->selected_entity == world->turn_data.characters[world->turn_data.current_character]) {
     world->selected_path = WorldCoordListFindPath(world, temp_arena, world->selected_entity->grid_pos, mouse_coord, 0);
   }
 
-  // this is garbage will clean up later
+  
   if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && world->grabbing_card) {
     world->grabbing_card->screen_position = Vector2Add(world->grabbing_card->screen_position, GetMouseDelta());
-  } else if (world->grabbing_card) {
+  }
+  else if (world->grabbing_card) {
     WorldCoord target_coord = WorldCoordFromVector2(Vector2Subtract(GetScreenToWorld2D(world->grabbing_card->screen_position, world->camera), Vector2One()));
     Entity *target = EntityFindByWorldCoord(world->entities, target_coord);
 
@@ -108,55 +143,30 @@ void GamePlayUpdate(
       CardListAppend(world->player.discard, world->grabbing_card);
 
       PlayCard(world, target);
-
-    } else {
+    }
+    else {
       CardListAppend(world->player.hand, world->grabbing_card);
     }
     world->grabbing_card = NULL;
 
-  } else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+  }
+  else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Entity *entity_clicked = EntityFindByWorldCoord(world->entities, mouse_coord);
-    if (entity_clicked) {
+    // check so we dont select another entity while pathfinding
+    if (entity_clicked && world->selected_path == NULL) {
       world->selected_entity = entity_clicked;
-    } else if (world->selected_entity) {
-      // Move Entity Stuff
-      Entity *entity = world->selected_entity;
+    }
+    else if (world->selected_entity && world->selected_entity == world->turn_data.characters[world->turn_data.current_character]) {
       if (world->selected_path) {
-        I32 movement_distance = entity->movement_left;
-        Vector2 center = {0.5f, 0.5f};
-
-        U32 i;
-        Vector2 difference;
-        for (i = 0; i < world->selected_path->len - 1; i++) {
-
-            Color path_color = WHITE;
-            Vector2 first_pos = Vector2FromWorldCoord(world->selected_path->ptr[i]);
-            Vector2 second_pos = Vector2FromWorldCoord(world->selected_path->ptr[i + 1]);
-
-
-            difference = Vector2Subtract(second_pos, Vector2FromWorldCoord(entity->grid_pos));
-
-            if (Vector2LengthSqr(difference) > movement_distance * movement_distance)
-              break;
-          }
-
-        WorldCoordList *new_path = ArenaPushNoZero(turn_arena, sizeof(WorldCoordList));
-        new_path->len = i + 1;
-        new_path->ptr = ArenaPushNoZero(turn_arena, sizeof(WorldCoord) * new_path->len);
-
-        memcpy(new_path->ptr, world->selected_path->ptr, sizeof(WorldCoord) * new_path->len);
-
-
-        world->selected_path = NULL;
-        entity->path = new_path;
-        if ((I32)Vector2Length(difference) >= entity->movement_left) {
-          entity->movement_left = 0;
-        }
-        else entity->movement_left -= (I32)Vector2Length(difference);
+        EntityMoveEntity(turn_arena, world);
       }
     }
   } 
-  
+
+  if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+    world->selected_entity = NULL;
+    world->selected_path = NULL;
+  }
 
   I32 c = GetCharPressed();
 
@@ -298,8 +308,6 @@ void EntityUpdate(World *world, Arena *perm_arena) {
   }
 }
 
-// get rid of this 
-#include <stdio.h>
 
 void GameGuiDraw(World *world, Arena *turn_arena) {
     DrawText(TextFormat("Turn: %i", world->turn_count), 0, 0, 20, WHITE);
@@ -347,6 +355,7 @@ void GameGuiDraw(World *world, Arena *turn_arena) {
     
     // Game Intermediate Mode Gui
     if (GuiButton(end_turn_rect, "End Turn")) {
+      EndTurn(world);
       WorldUpdateTurn(world, turn_arena);
     }
 
